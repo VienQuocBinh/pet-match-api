@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'fu'
-version = '0.0.1-SNAPSHOT'
+version = '1.0'
 sourceCompatibility = '17'
 
 configurations {
@@ -24,14 +24,39 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+    implementation 'org.modelmapper:modelmapper:3.1.0'
+    // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
+    // https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
+    implementation 'com.google.firebase:firebase-admin:9.1.1'
+    runtimeOnly 'com.mysql:mysql-connector-j:8.0.33'
+    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-api:5.9.2'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) },
+                'Main-Class': 'petmatch.PetMatchApplication'
+        )
+    }
 }

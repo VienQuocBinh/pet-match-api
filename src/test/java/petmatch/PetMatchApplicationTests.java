@@ -1,5 +1,6 @@
 package petmatch;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -7,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class PetMatchApplicationTests {
 
     @Test
-    void contextLoads() {
+    public void test() {
+        Assertions.assertEquals("test", "test");
     }
-
 }
