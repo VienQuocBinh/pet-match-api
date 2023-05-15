@@ -26,6 +26,8 @@ public class Profile {
     @NotNull
     @Length(min = 3, max = 100)
     private String name;
+    private Double height;
+    private Double weight;
     private Date birthday;
     @Enumerated(EnumType.STRING)
     private Gender gender; // enum gender
@@ -34,6 +36,13 @@ public class Profile {
     private List<String> gallery;
     @ElementCollection
     private List<String> interests;
+
+    @NotNull
+    @Column(name = "created_ts")
+    private Date createdTimestamp;
+    @NotNull
+    @Column(name = "updated_ts")
+    private Date updatedTimestamp;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -42,7 +51,6 @@ public class Profile {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "breed_id")
     private Breed breed;
-
     @OneToMany(mappedBy = "matchFrom")
     private List<Match> matchFrom;
     @OneToMany(mappedBy = "matchTo")
