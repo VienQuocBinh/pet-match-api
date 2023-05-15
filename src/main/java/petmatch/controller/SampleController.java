@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import petmatch.model.SampleModel;
+import petmatch.model.User;
 
 @Slf4j
 @Controller
@@ -16,8 +16,9 @@ import petmatch.model.SampleModel;
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class SampleController {
     @GetMapping("/v1/hello-world")
-    public ResponseEntity<SampleModel> helloWorld() {
+    public ResponseEntity<User> helloWorld() {
         log.info("Returning hello world");
-        return new ResponseEntity<>(SampleModel.builder().greeting("Hello World").build(), HttpStatus.CREATED);
+//        return new ResponseEntity<>(User.builder().greeting("Hello World").build(), HttpStatus.CREATED);
+        return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 }
