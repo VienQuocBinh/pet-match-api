@@ -2,9 +2,11 @@ package petmatch.model;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -23,4 +25,10 @@ public class Reaction {
     @ManyToOne
     @JoinColumn(name = "profile_id")
     private Profile profile;
+    @NotNull
+    @Column(name = "created_ts")
+    private Date createdTimestamp;
+    @NotNull
+    @Column(name = "updated_ts")
+    private Date updatedTimestamp;
 }

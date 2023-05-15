@@ -10,6 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class Address {
@@ -17,12 +18,11 @@ public class Address {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
-
     private String address;
     private Double longitude;
     private Double latitude;
+    @Column(name = "geo_hash")
     private String geoHash;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

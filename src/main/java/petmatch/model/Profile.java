@@ -25,11 +25,10 @@ public class Profile {
     @NotNull
     @Length(min = 3, max = 100)
     private String name;
-    private Date birthDate;
+    private Date birthday;
     @Enumerated(EnumType.STRING)
     private Gender gender; // enum gender
     private String description;
-    private String attribute;
     @ElementCollection
     private List<String> gallery;
     @ElementCollection
@@ -40,7 +39,7 @@ public class Profile {
     @OneToMany(mappedBy = "profile")
     private List<Reaction> reaction;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "bread_id")
+    @JoinColumn(name = "breed_id")
     private Breed breed;
 
     @OneToMany(mappedBy = "profile")
