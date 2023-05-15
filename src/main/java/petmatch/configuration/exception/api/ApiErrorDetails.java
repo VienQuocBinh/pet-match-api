@@ -1,10 +1,6 @@
 package petmatch.configuration.exception.api;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Builder;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Setter
@@ -12,8 +8,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApiErrorDetails {
+    private String object;
     private String field;
-    private String value;
-    private String location;
-    private String issue;
+    private Object value;
+    private String message;
+
+    public ApiErrorDetails(String object, String message) {
+        this.object = object;
+        this.message = message;
+    }
 }

@@ -1,38 +1,39 @@
 package petmatch.configuration.exception.api;
 
 import org.springframework.http.ResponseEntity;
-import petmatch.configuration.exception.DataNotFoundException;
+import petmatch.configuration.constance.ErrorStatus;
+import petmatch.configuration.exception.EntityNotFoundException;
 
 import java.util.List;
 
 public class ApiErrorBuilder {
-    public static ResponseEntity<ApiError> buildApiErrorResponse(Exception e, Status status) {
+    public static ResponseEntity<ApiError> buildApiErrorResponse(Exception exception, ErrorStatus errorStatus) {
         return new ResponseEntity<>(
                 ApiError.builder()
-                        .errorId(status.getErrorId())
-                        .message(status.getMessage())
-                        .httpStatus(status.getStatus())
-                        .details(buildApiErrorDetails(e, status))
-                        .build(), status.getStatus()
+//                        .errorId(errorStatus.getErrorId())
+                        .message(errorStatus.getMessage())
+                        .httpStatus(errorStatus.getStatus())
+                        .details(buildApiErrorDetails(exception, errorStatus))
+                        .build(), errorStatus.getStatus()
         );
     }
 
-    private static List<ApiErrorDetails> buildApiErrorDetails(Exception exception, Status status) {
-        if (exception instanceof DataNotFoundException) {
-            return buildDetails((DataNotFoundException) exception);
+    private static List<ApiErrorDetails> buildApiErrorDetails(Exception exception, ErrorStatus errorStatus) {
+        if (exception instanceof EntityNotFoundException) {
+            return buildDetails((EntityNotFoundException) exception);
         }
-        return buildDetails(status);
+        return buildDetails(errorStatus);
     }
 
-    private static List<ApiErrorDetails> buildDetails(Status status) {
+    private static List<ApiErrorDetails> buildDetails(ErrorStatus errorStatus) {
         return List.of(ApiErrorDetails.builder()
-                .issue(status.getIssue()).build());
+                .message(errorStatus.getIssue()).build());
     }
 
-    private static List<ApiErrorDetails> buildDetails(DataNotFoundException exception) {
+    private static List<ApiErrorDetails> buildDetails(EntityNotFoundException exception) {
         return List.of(ApiErrorDetails.builder()
-                .field(exception.getField())
-                .issue(exception.getMessage())
+//                .field(exception.getField())
+                .message(exception.getMessage())
                 .build());
     }
 

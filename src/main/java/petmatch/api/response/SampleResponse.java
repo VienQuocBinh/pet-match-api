@@ -1,4 +1,4 @@
-package petmatch.api;
+package petmatch.api.response;
 
 public class SampleResponse {
 }
