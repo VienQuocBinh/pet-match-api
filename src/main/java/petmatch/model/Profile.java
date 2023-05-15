@@ -1,5 +1,6 @@
 package petmatch.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -42,6 +43,8 @@ public class Profile {
     @JoinColumn(name = "breed_id")
     private Breed breed;
 
-    @OneToMany(mappedBy = "profile")
-    private List<Match> match;
+    @OneToMany(mappedBy = "matchFrom")
+    private List<Match> matchFrom;
+    @OneToMany(mappedBy = "matchTo")
+    private List<Match> matchTo;
 }
