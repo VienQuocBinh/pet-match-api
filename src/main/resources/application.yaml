@@ -4,13 +4,17 @@ spring:
     username: user
     url: jdbc:postgresql://localhost:5432/pet-match
     password: '123456'
+  #  autoconfigure:
+  #    exclude:
+  #      - org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     hibernate:
-      ddl-auto: create-drop
+      #disable this to run flyway. If need to change anhything to database, please create new flyway script to run
+      ddl-auto: none
     show-sql: false
   profiles:
     default: local
@@ -18,3 +22,11 @@ server:
   port: '8080'
   servlet:
     context-path: /pet-match
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+security:
+  jwt:
+    secret: '432646294A404E635266556A586E5A7234753778214125442A472D4B61506453'
+    expiration: 3600000
+

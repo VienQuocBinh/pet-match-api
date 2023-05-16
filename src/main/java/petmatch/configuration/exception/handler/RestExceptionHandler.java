@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.lang.NonNull;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -23,7 +24,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import petmatch.configuration.exception.EntityNotFoundException;
 import petmatch.configuration.exception.api.ApiError;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -44,9 +44,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
-                                                                          @Nullable HttpHeaders headers,
-                                                                          @Nullable HttpStatusCode status,
-                                                                          @Nullable WebRequest request) {
+                                                                          @NonNull HttpHeaders headers,
+                                                                          @NonNull HttpStatusCode status,
+                                                                          @NonNull WebRequest request) {
         String error = ex.getParameterName() + " parameter is missing";
         return buildResponseEntity(new ApiError(BAD_REQUEST, error, ex));
     }
@@ -62,9 +62,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @Override
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex,
-                                                                     @Nullable HttpHeaders headers,
-                                                                     @Nullable HttpStatusCode status,
-                                                                     @Nullable WebRequest request) {
+                                                                     @NonNull HttpHeaders headers,
+                                                                     @NonNull HttpStatusCode status,
+                                                                     @NonNull WebRequest request) {
         StringBuilder builder = new StringBuilder();
         builder.append(ex.getContentType());
         builder.append(" media type is not supported. Supported media types are ");
@@ -82,22 +82,22 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      * @return the ApiError object
      */
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(@Nullable HttpMessageNotReadableException ex,
-                                                                  @Nullable HttpHeaders headers,
-                                                                  @Nullable HttpStatusCode status,
-                                                                  @Nullable WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(@NonNull HttpMessageNotReadableException ex,
+                                                                  @NonNull HttpHeaders headers,
+                                                                  @NonNull HttpStatusCode status,
+                                                                  @NonNull WebRequest request) {
         String error = "Malformed JSON request";
-        assert ex != null;
+
         return buildResponseEntity(new ApiError(BAD_REQUEST, error, ex));
     }
 
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotWritable(@Nullable HttpMessageNotWritableException ex,
-                                                                  @Nullable HttpHeaders headers,
-                                                                  @Nullable HttpStatusCode status,
-                                                                  @Nullable WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMessageNotWritable(@NonNull HttpMessageNotWritableException ex,
+                                                                  @NonNull HttpHeaders headers,
+                                                                  @NonNull HttpStatusCode status,
+                                                                  @NonNull WebRequest request) {
         String error = "Error while writing JSON output";
-        assert ex != null;
+
         return buildResponseEntity(new ApiError(INTERNAL_SERVER_ERROR, error, ex));
     }
 
@@ -112,9 +112,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      * @return the ApiError object
      */
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, @Nullable HttpHeaders headers,
-                                                                  @Nullable HttpStatusCode status,
-                                                                  @Nullable WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  @NonNull HttpHeaders headers,
+                                                                  @NonNull HttpStatusCode status,
+                                                                  @NonNull WebRequest request) {
         ApiError apiError = new ApiError(BAD_REQUEST);
         apiError.setMessage("Validation error");
         apiError.addValidationFieldErrors(ex.getBindingResult().getFieldErrors());
@@ -133,9 +134,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex,
-                                                                   @Nullable HttpHeaders headers,
-                                                                   @Nullable HttpStatusCode status,
-                                                                   @Nullable WebRequest request) {
+                                                                   @NonNull HttpHeaders headers,
+                                                                   @NonNull HttpStatusCode status,
+                                                                   @NonNull WebRequest request) {
         ApiError apiError = new ApiError(BAD_REQUEST);
         apiError.setMessage(String.format("Could not find the %s method for URL %s", ex.getHttpMethod(), ex.getRequestURL()));
         apiError.setDebugMessage(ex.getMessage());

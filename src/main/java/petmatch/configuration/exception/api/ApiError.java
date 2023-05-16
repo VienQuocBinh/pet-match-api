@@ -26,8 +26,9 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ApiError {
     private HttpStatus httpStatus;
+    @Builder.Default
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss", timezone = "Asia/Bangkok")
-    private Date timestamp;
+    private Date timestamp = Date.from(Instant.now());
     private String message;
     private String debugMessage;
     private List<ApiErrorDetails> details;
@@ -78,7 +79,7 @@ public class ApiError {
     }
 
     /**
-     * Utility method of addValidationObjectErrors(List<ObjectError> globalErrors)
+     * Add each constraint error to the error detail list
      *
      * @param object        name of the object which violated the constraint
      * @param field         name of the field which violated the constraint
@@ -93,6 +94,11 @@ public class ApiError {
         globalErrors.forEach(this::addValidationObjectError);
     }
 
+    /**
+     * Utility method of addValidationObjectErrors(List<ObjectError> globalErrors)
+     *
+     * @param objectError objectError
+     */
     private void addValidationObjectError(ObjectError objectError) {
         this.addValidationError(
                 objectError.getObjectName(),
