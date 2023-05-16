@@ -4,9 +4,12 @@ package unit.petmatch.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.DoNotMock;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import petmatch.api.request.ProfileRequest;
 import petmatch.api.response.ProfileDetailResponse;
 import petmatch.api.response.ProfileResponse;
@@ -16,6 +19,7 @@ import petmatch.configuration.exception.InvalidArgumentException;
 import petmatch.model.Breed;
 import petmatch.model.Profile;
 import petmatch.model.Species;
+import petmatch.repository.BreedRepository;
 import petmatch.repository.ProfileRepository;
 import petmatch.service.implementation.ProfileServiceImpl;
 
@@ -25,8 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -42,6 +45,12 @@ public class ProfileServiceTest {
 
     @Mock
     private ProfileRepository mockProfileRepository;
+
+    @Mock
+    private BreedRepository mockBreedRepository;
+
+    @Spy
+    private ModelMapper modelMapper;
 
     @Test
     public void givenValidUserId_whenGetProfileList_thenReturnProfilesResponses() throws Exception {
@@ -98,11 +107,14 @@ public class ProfileServiceTest {
         //given
         ProfileRequest request = buildProfileRequest();
         Profile profile = buildProfileList().get(0);
+        Breed breed = buildBreed();
         when(mockProfileRepository.save(any())).thenAnswer(invocation -> profile);
+        when(mockBreedRepository.findById(any())).thenReturn(Optional.of(breed));
         //when
         var createdProfile = profileService.createProfileDetail(request);
         //then
         assertEquals(createdProfile.getProfileId(), profile.getId());
+        assertEquals(profile.getBreed().getId(), createdProfile.getBreed().getId());
         verify(mockProfileRepository, times(1)).save(any());
     }
 
@@ -114,19 +126,65 @@ public class ProfileServiceTest {
         verify(mockProfileRepository, times(0)).save(any());
     }
 
+    @Test
+    public void givenNullBreed_WhenCreateProfile_thenThrowError() {
+        ProfileRequest request = buildProfileRequest();
+        when(mockBreedRepository.findById(any())).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> profileService.createProfileDetail(request));
+        verify(mockProfileRepository, times(0)).save(any());
+    }
+
+    @Test
+    public void givenValidProfile_whenUpdateProfile_thenReturn200OK() {
+        //given
+        ProfileRequest request = buildProfileRequest();
+        var profileTo = buildProfileList().get(0);
+        var breed = buildBreed();
+        when(mockBreedRepository.findById(any())).thenReturn(Optional.of(breed));
+        when(mockProfileRepository.save(any())).thenReturn(profileTo);
+        //when
+        var updatedProfile = profileService.updateProfileDetail(request);
+        //then
+        assertEquals(120d, updatedProfile.getHeight());
+        assertEquals(20d, updatedProfile.getWeight());
+        verify(mockProfileRepository, times(1)).save(any());
+    }
+
+    @Test
+    public void testProfileRequestValidation() {
+        var invalidException = InvalidArgumentException.class;
+        ProfileRequest request = ProfileRequest.builder().build();
+        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
+        request.setName("bla bla");
+        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
+        request.setBreed(buildBreed());
+        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
+        request.setAvatar("blu blu");
+        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
+        request.setHeight(-1d);
+        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
+        request.setHeight(1d);
+        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
+        request.setWeight(-1d);
+        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
+        request.setWeight(1d);
+        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
+        request.setGender(Gender.MALE);
+        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
+        request.setBirthday(Date.from(Instant.now()));
+    }
+
+    @Test
+    public void givenInvalidRequest_whenUpdateProfile_thenthrowError() {
+        ProfileRequest request = buildProfileRequest();
+        when(mockBreedRepository.findById(any())).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> profileService.updateProfileDetail(request));
+        verify(mockProfileRepository, times(0)).save(any());
+    }
+
     private ProfileRequest buildProfileRequest() {
-        Species species = Species.builder()
-                .id(UUID.randomUUID())
-                .name("Cho")
-                .build();
-        Breed breed = Breed.builder()
-                .id(UUID.randomUUID())
-                .species(species)
-                .name("Cho Shiba")
-                .build();
+        var breed = buildBreed();
         return ProfileRequest.builder()
-                .userId("f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454")
-                .profileId(UUID.randomUUID())
                 .breed(breed)
                 .gender(Gender.MALE)
                 .name("Dog")
@@ -138,11 +196,28 @@ public class ProfileServiceTest {
                 .build();
     }
 
+    private Breed buildBreed() {
+        Species species = Species.builder()
+                .id(UUID.randomUUID())
+                .name("Cho")
+                .build();
+        return Breed.builder()
+                .id(UUID.randomUUID())
+                .species(species)
+                .name("Cho Shiba")
+                .build();
+    }
+
     private List<Profile> buildProfileList() {
         return List.of(
                 Profile.builder()
                         .id(UUID.randomUUID())
                         .name("Dog")
+                        .height(120d)
+                        .weight(20d)
+                        .gender(Gender.MALE)
+                        .birthday(Date.from(Instant.now()))
+                        .breed(buildBreed())
                         .build(),
                 Profile.builder()
                         .id(UUID.randomUUID())
@@ -152,6 +227,6 @@ public class ProfileServiceTest {
                         .id(UUID.randomUUID())
                         .name("Dog")
                         .build()
-                );
+        );
     }
 }

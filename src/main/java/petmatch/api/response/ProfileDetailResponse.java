@@ -23,7 +23,7 @@ import java.util.UUID;
 public class ProfileDetailResponse {
     private UUID profileId;
     private String name;
-    private Breed type;
+    private Breed breed;
 
     private Double height;
     private Double weight;
