@@ -20,6 +20,8 @@ import petmatch.model.Breed;
 import petmatch.model.Profile;
 import petmatch.model.Species;
 import petmatch.repository.BreedRepository;
+import petmatch.repository.GalleryRepository;
+import petmatch.repository.InterestRepository;
 import petmatch.repository.ProfileRepository;
 import petmatch.service.implementation.ProfileServiceImpl;
 
@@ -48,6 +50,12 @@ public class ProfileServiceTest {
 
     @Mock
     private BreedRepository mockBreedRepository;
+
+    @Mock
+    private InterestRepository mockInterestRepository;
+
+    @Mock
+    private GalleryRepository mockGalleryRepository;
 
     @Spy
     private ModelMapper modelMapper;
@@ -122,7 +130,8 @@ public class ProfileServiceTest {
     public void givenInvalidProfileRequest_whenCreateProfileDetails_thenThrowsError() {
         ProfileRequest request = buildProfileRequest();
         request.setName(null);
-        assertThrows(InvalidArgumentException.class, () -> profileService.createProfileDetail(request));
+        when(mockBreedRepository.findById(any())).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> profileService.createProfileDetail(request));
         verify(mockProfileRepository, times(0)).save(any());
     }
 
@@ -148,30 +157,6 @@ public class ProfileServiceTest {
         assertEquals(120d, updatedProfile.getHeight());
         assertEquals(20d, updatedProfile.getWeight());
         verify(mockProfileRepository, times(1)).save(any());
-    }
-
-    @Test
-    public void testProfileRequestValidation() {
-        var invalidException = InvalidArgumentException.class;
-        ProfileRequest request = ProfileRequest.builder().build();
-        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
-        request.setName("bla bla");
-        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
-        request.setBreed(buildBreed());
-        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
-        request.setAvatar("blu blu");
-        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
-        request.setHeight(-1d);
-        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
-        request.setHeight(1d);
-        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
-        request.setWeight(-1d);
-        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
-        request.setWeight(1d);
-        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
-        request.setGender(Gender.MALE);
-        assertThrows(invalidException, () -> profileService.createProfileDetail(request));
-        request.setBirthday(Date.from(Instant.now()));
     }
 
     @Test

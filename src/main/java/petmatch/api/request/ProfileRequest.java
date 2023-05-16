@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.*;
 import petmatch.configuration.constance.Gender;
 import petmatch.model.Breed;
+import petmatch.model.Interests;
 
 import java.util.Date;
 import java.util.List;
@@ -35,6 +36,8 @@ public class ProfileRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private Date birthday;
     @Enumerated(EnumType.ORDINAL)
+    @NotNull
     private Gender gender;
     private List<Breed> interests;
+    private List<String> gallery;
 }

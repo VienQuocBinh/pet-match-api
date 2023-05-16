@@ -26,11 +26,12 @@ public class ProfileDetailResponse {
     private Breed breed;
 
     private Double height;
+    private String avatar;
     private Double weight;
     private Gender gender;
     private String description;
-    private List<Breed> interest;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private Date birthday;
     private List<String> gallery;
+    private List<Breed> interests;
 }

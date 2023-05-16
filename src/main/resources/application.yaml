@@ -12,6 +12,8 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: false
+  profiles:
+    default: local
 server:
   port: '8080'
   servlet:

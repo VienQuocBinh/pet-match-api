@@ -44,4 +44,12 @@ public class ProfileController {
         return new ResponseEntity<>(profileService.createProfileDetail(profile), HttpStatus.CREATED);
     }
 
+    @PatchMapping("/v1/profiles")
+    public ResponseEntity<ProfileDetailResponse> updateProfileDetail(
+            @RequestBody @Valid ProfileRequest profile
+    ) {
+        log.info("Update info");
+        return new ResponseEntity<>(profileService.updateProfileDetail(profile), HttpStatus.OK);
+    }
+
 }
