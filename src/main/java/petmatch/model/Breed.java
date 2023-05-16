@@ -11,8 +11,9 @@ import java.util.UUID;
 @Builder
 @Getter
 @Setter
-@RequiredArgsConstructor
+@EqualsAndHashCode
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class Breed {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -21,7 +22,6 @@ public class Breed {
     private String name;
     @OneToMany(mappedBy = "breed")
     private List<Profile> profiles;
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "species_id")
     private Species species;

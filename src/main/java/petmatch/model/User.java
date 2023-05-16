@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.checkerframework.checker.units.qual.N;
 import org.checkerframework.common.aliasing.qual.Unique;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity(name = "\"user\"")
@@ -34,4 +36,10 @@ public class User {
     private Subscription subscription;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Profile> profiles;
+    @NotNull
+    @Column(name = "created_ts")
+    private Date createdTimestamp;
+    @NotNull
+    @Column(name = "updated_ts")
+    private Date updatedTimestamp;
 }

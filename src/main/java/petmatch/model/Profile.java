@@ -1,5 +1,6 @@
 package petmatch.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -25,24 +26,33 @@ public class Profile {
     @NotNull
     @Length(min = 3, max = 100)
     private String name;
-    private Date birthDate;
+    private Double height;
+    private Double weight;
+    private Date birthday;
     @Enumerated(EnumType.STRING)
     private Gender gender; // enum gender
     private String description;
-    private String attribute;
     @ElementCollection
     private List<String> gallery;
     @ElementCollection
     private List<String> interests;
+
+    @NotNull
+    @Column(name = "created_ts")
+    private Date createdTimestamp;
+    @NotNull
+    @Column(name = "updated_ts")
+    private Date updatedTimestamp;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
     @OneToMany(mappedBy = "profile")
     private List<Reaction> reaction;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "bread_id")
+    @JoinColumn(name = "breed_id")
     private Breed breed;
-
-    @OneToMany(mappedBy = "profile")
-    private List<Match> match;
+    @OneToMany(mappedBy = "matchFrom")
+    private List<Match> matchFrom;
+    @OneToMany(mappedBy = "matchTo")
+    private List<Match> matchTo;
 }
