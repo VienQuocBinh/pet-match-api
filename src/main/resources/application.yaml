@@ -19,3 +19,10 @@ server:
   port: '8080'
   servlet:
     context-path: /pet-match
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+security:
+  jwt:
+    secret: '432646294A404E635266556A586E5A7234753778214125442A472D4B61506453'
+    expiration: 3600000
