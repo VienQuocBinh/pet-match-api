@@ -10,18 +10,12 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     hibernate:
-      ddl-auto: update
+      #disable this to run flyway. If need to change anhything to database, please create new flyway script to run
+      ddl-auto: none
     show-sql: false
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  profiles:
+    default: local
 server:
   port: '8080'
   servlet:
     context-path: /pet-match
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-security:
-  jwt:
-    secret: '432646294A404E635266556A586E5A7234753778214125442A472D4B61506453'
-    expiration: 3600000
