@@ -20,8 +20,6 @@ public class Breed {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
     private String name;
-    @OneToMany(mappedBy = "breed")
-    private List<Profile> profiles;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "species_id")
     private Species species;

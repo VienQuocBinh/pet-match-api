@@ -78,6 +78,7 @@ CREATE TABLE profile
     height      real         not null,
     weight      real         not null,
     gender      varchar(255) NULL,
+    avatar      varchar(255) NOT NULL,
     birthday    timestamp(6) NULL,
     description varchar(255) NULL,
     breed_id    uuid         NULL,
@@ -90,37 +91,38 @@ CREATE TABLE profile
 );
 
 
--- public.profile_gallery definition
+-- public.gallery definition
 
 -- Drop table
 
--- DROP TABLE profile_gallery;
+-- DROP TABLE gallery;
 
-CREATE TABLE profile_gallery
+CREATE TABLE gallery
 (
-    id         uuid         NOT NULL,
+    id         uuid         NOT NULL DEFAULT gen_random_uuid(),
     profile_id uuid         NOT NULL,
-    gallery    varchar(255) NULL,
-    created_ts timestamp(6) NOT NULL,
-    updated_ts timestamp(6) NOT NULL,
+    gallery    varchar(255) NOT NULL,
+    created_ts timestamp(6) NOT NULL DEFAULT current_timestamp,
+    updated_ts timestamp(6) NOT NULL DEFAULT current_timestamp,
     CONSTRAINT profile_gallery_key PRIMARY KEY (id),
     CONSTRAINT fk53gm4cq3hwssc617m9fmhghg FOREIGN KEY (profile_id) REFERENCES profile (id)
 );
 
 
--- public.profile_interests definition
+-- public.interests definition
 
 -- Drop table
 
--- DROP TABLE profile_interests;
+-- DROP TABLE interests;
 
-CREATE TABLE profile_interests
+CREATE TABLE interests
 (
-    id         uuid         NOT NULL,
-    profile_id uuid         NOT NULL,
-    interests  varchar(255) NULL,
+    id         uuid NOT NULL,
+    profile_id uuid NOT NULL,
+    breed_id   uuid NOT NULL,
     CONSTRAINT profile_interests_key PRIMARY KEY (id),
-    CONSTRAINT fkl6bihw5xlah32qbt3i3laqljk FOREIGN KEY (profile_id) REFERENCES profile (id)
+    CONSTRAINT fkl6bihw5xlah32qbt3i3laqljk FOREIGN KEY (profile_id) REFERENCES profile (id),
+    CONSTRAINT interest_breed_key FOREIGN KEY (breed_id) REFERENCES breed(id)
 );
 
 
