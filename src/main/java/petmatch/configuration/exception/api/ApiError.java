@@ -26,8 +26,9 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ApiError {
     private HttpStatus httpStatus;
+    @Builder.Default
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss", timezone = "Asia/Bangkok")
-    private Date timestamp;
+    private Date timestamp = Date.from(Instant.now());
     private String message;
     private String debugMessage;
     private List<ApiErrorDetails> details;

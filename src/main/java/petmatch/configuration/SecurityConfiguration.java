@@ -44,8 +44,7 @@ public class SecurityConfiguration {
                 .authenticationEntryPoint(jwtEntryPoint)
                 .and()
                 .addFilterBefore(corsFilter, ChannelProcessingFilter.class)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-        ;
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

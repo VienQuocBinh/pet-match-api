@@ -5,33 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import petmatch.configuration.exception.JwtTokenException;
 import petmatch.configuration.exception.api.ApiError;
 
 @RestControllerAdvice
 @Log4j2
 public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
-    /**
-     * Handle JWT authentication cause by unauthorized user
-     *
-     * @param exception {@link  JwtTokenException}
-     * @return {@link ResponseEntity<Object>}
-     * @author Vien Binh
-     */
-    @ExceptionHandler(JwtTokenException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<Object> handleJwtTokenException(JwtTokenException exception) {
-        log.error(exception.getMessage());
-        return buildResponseEntity(
-                ApiError.builder()
-                        .httpStatus(HttpStatus.UNAUTHORIZED)
-                        .message("JWT Unauthorized: " + exception.getMessage())
-                        .build());
-    }
-
     /**
      * Wrong login information
      *
@@ -40,13 +20,13 @@ public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
      * @author Vien Binh
      */
     @ExceptionHandler(AuthenticationException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<Object> handleAuthenticationException(Exception exception) {
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception) {
         log.error(exception.getMessage());
+
         return buildResponseEntity(
                 ApiError.builder()
                         .httpStatus(HttpStatus.UNAUTHORIZED)
-                        .message("Authentication failed. Wrong credentials: " + exception.getMessage())
+                        .message("Authentication failed: " + exception.getMessage())
                         .build());
     }
 

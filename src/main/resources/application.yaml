@@ -4,6 +4,9 @@ spring:
     username: user
     url: jdbc:postgresql://localhost:5432/pet-match
     password: '123456'
+  #  autoconfigure:
+  #    exclude:
+  #      - org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
   jpa:
     properties:
       hibernate:
@@ -25,3 +28,4 @@ security:
   jwt:
     secret: '432646294A404E635266556A586E5A7234753778214125442A472D4B61506453'
     expiration: 3600000
+
