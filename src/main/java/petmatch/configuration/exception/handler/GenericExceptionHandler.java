@@ -21,7 +21,8 @@ public class GenericExceptionHandler extends RuntimeException {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllExceptions(Exception exception) {
         ApiError apiError = new ApiError(INTERNAL_SERVER_ERROR,
-                "Not handle: " + exception.getClass().getSimpleName(),
+                "Not handle: "
+                        + exception.getClass().getSimpleName(),
                 exception);
         return new ResponseEntity<>(apiError, INTERNAL_SERVER_ERROR);
     }

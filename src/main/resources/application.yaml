@@ -10,9 +10,18 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: false
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 server:
   port: '8080'
   servlet:
     context-path: /pet-match
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+security:
+  jwt:
+    secret: '432646294A404E635266556A586E5A7234753778214125442A472D4B61506453'
+    expiration: 3600000
