@@ -3,8 +3,10 @@ package petmatch.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.checkerframework.checker.units.qual.C;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 import java.util.UUID;
@@ -16,6 +18,7 @@ import java.util.UUID;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Match {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -29,8 +32,10 @@ public class Match {
     private Profile matchTo;
     @NotNull
     @Column(name = "created_ts")
+    @CreatedDate
     private Date createdTimestamp;
     @NotNull
     @Column(name = "updated_ts")
+    @LastModifiedDate
     private Date updatedTimestamp;
 }

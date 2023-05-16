@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 import java.util.UUID;
@@ -15,6 +18,7 @@ import java.util.UUID;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Reaction {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -27,8 +31,10 @@ public class Reaction {
     private Profile profile;
     @NotNull
     @Column(name = "created_ts")
+    @CreatedDate
     private Date createdTimestamp;
     @NotNull
     @Column(name = "updated_ts")
+    @LastModifiedDate
     private Date updatedTimestamp;
 }
