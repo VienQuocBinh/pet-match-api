@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.checkerframework.checker.units.qual.N;
 import org.checkerframework.common.aliasing.qual.Unique;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.List;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class User {
     @Id
     private String id; // From Firebase
@@ -38,8 +41,10 @@ public class User {
     private List<Profile> profiles;
     @NotNull
     @Column(name = "created_ts")
+    @CreatedDate
     private Date createdTimestamp;
     @NotNull
     @Column(name = "updated_ts")
+    @LastModifiedBy
     private Date updatedTimestamp;
 }
