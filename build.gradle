@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.0.6'
     id 'io.spring.dependency-management' version '1.1.0'
     id "org.flywaydb.flyway" version "9.8.1"
+    id 'jacoco'
 }
 
 group = 'fu'
@@ -57,6 +58,8 @@ flyway {
 flywayMigrate.dependsOn classes
 
 bootRun.dependsOn flywayClean, flywayMigrate
+
+build.dependsOn jacocoTestReport
 
 jar {
     manifest {
