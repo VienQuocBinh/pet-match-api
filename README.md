@@ -2,7 +2,8 @@
  
 The app for pet's owner who want to find other owners who satisfied their pets mating demand.
 
-### BE Server Test Swagger: 
+### BE Server Test Swagger: http://localhost:8080/pet-match/swagger-ui/index.html
+### Swagger Editor: https://editor.swagger.io/?fbclid=IwAR2NjU1ua2Y697XLtlYuTNbeQygUjPiwTEYdAw8P2-F8Gcsk1UMZ9ftuCks
 
 ## Requirements
 
@@ -21,7 +22,7 @@ libraries and versions used.
 You will need:
 
 - Java JDK 17 or higher. [Installation guide](https://docs.oracle.com/en/java/javase/17/install/index.html)
-- MySQL 8.0.1 or higher. [Installation guide](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/)
+- PostgreSQL 14.0 or higher. [Installation guide](https://www.postgresql.org/docs/14/index.html)
 - Gradle 7.0 or higher. [Installation guide](https://gradle.org/install/)
 - Git
   Clone the project and use Gradle to build the server
