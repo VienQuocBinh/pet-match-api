@@ -1,7 +1,6 @@
 package petmatch.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +26,6 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    @SecurityRequirement(name = "google")
     @Operation(summary = "For login by Google", description = "Authenticate google account")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
