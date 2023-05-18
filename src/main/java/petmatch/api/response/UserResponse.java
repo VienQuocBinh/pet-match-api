@@ -16,7 +16,7 @@ import java.util.Date;
 public class UserResponse {
     private String id; // From Firebase
     private String email;
-    private String password;
+    //    private String password;
     private String phone;
     //    private List<Address> addresses;
     private Subscription subscription;
