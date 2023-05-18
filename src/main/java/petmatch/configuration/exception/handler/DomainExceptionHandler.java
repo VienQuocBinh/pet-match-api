@@ -7,6 +7,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import petmatch.configuration.exception.InternalServerErrorException;
 import petmatch.configuration.exception.api.ApiError;
 
 @RestControllerAdvice
@@ -22,11 +23,20 @@ public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception) {
         log.error(exception.getMessage());
-
         return buildResponseEntity(
                 ApiError.builder()
                         .httpStatus(HttpStatus.UNAUTHORIZED)
                         .message("Authentication failed: " + exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(InternalServerErrorException.class)
+    public ResponseEntity<Object> handleInternalServerError(InternalServerErrorException exception) {
+        log.error(exception.getMessage());
+        return buildResponseEntity(
+                ApiError.builder()
+                        .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .message("Runtime error: " + exception.getMessage())
                         .build());
     }
 
