@@ -5,9 +5,14 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import petmatch.api.domain.UserInfo;
+import petmatch.configuration.exception.EntityNotFoundException;
+import petmatch.model.User;
+import petmatch.repository.UserRepository;
 
 import java.security.Key;
 import java.util.Date;
@@ -16,7 +21,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
+    private final UserRepository userRepository;
     @Value("${security.jwt.secret}")
     private String SECRET_KEY;
     @Value("${security.jwt.expiration}")
@@ -32,7 +39,16 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        Map<String, Object> claims = new HashMap<>();
+        var user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new EntityNotFoundException(User.class, "email", userDetails.getUsername()));
+        // User information: email, role
+        var info = UserInfo.builder()
+                .email(user.getEmail())
+                .role(user.getRole().name())
+                .build();
+        claims.put("user", info);
+        return generateToken(claims, userDetails);
     }
 
     public String generateToken(Map<String, Object> extraClaims,
