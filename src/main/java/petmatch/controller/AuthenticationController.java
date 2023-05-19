@@ -1,6 +1,8 @@
 package petmatch.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +13,8 @@ import petmatch.api.request.AuthenticationRequest;
 import petmatch.api.request.RegisterRequest;
 import petmatch.api.response.AuthenticationResponse;
 import petmatch.service.AuthenticationService;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -31,5 +35,10 @@ public class AuthenticationController {
             @RequestBody AuthenticationRequest request
     ) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
+    }
+
+    @PostMapping("/refresh-token")
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        authenticationService.refreshToken(request, response);
     }
 }

@@ -27,7 +27,9 @@ public class JwtService {
     @Value("${security.jwt.secret}")
     private String SECRET_KEY;
     @Value("${security.jwt.expiration}")
-    private long EXPIRED_TIME;
+    private long JWT_EXPIRED_TIME;
+    @Value("${security.jwt.refresh-token.expiration}")
+    private long REFRESH_TOKEN_EXPIRED_TIME;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -39,26 +41,26 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        var user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new EntityNotFoundException(User.class, "email", userDetails.getUsername()));
-        // User information: email, role
-        var info = UserInfo.builder()
-                .email(user.getEmail())
-                .role(user.getRole().name())
-                .build();
-        claims.put("user", info);
-        return generateToken(claims, userDetails);
+        Map<String, Object> claims = buildClaims(userDetails);
+
+        return buildToken(claims, userDetails, JWT_EXPIRED_TIME);
     }
 
-    public String generateToken(Map<String, Object> extraClaims,
-                                UserDetails userDetails) {
+    public String generateRefreshToken(UserDetails userDetails) {
+        Map<String, Object> claims = buildClaims(userDetails);
+
+        return buildToken(claims, userDetails, REFRESH_TOKEN_EXPIRED_TIME);
+    }
+
+    public String buildToken(Map<String, Object> extraClaims,
+                             UserDetails userDetails,
+                             long expiration) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRED_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -88,5 +90,18 @@ public class JwtService {
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private Map<String, Object> buildClaims(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        var user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new EntityNotFoundException(User.class, "email", userDetails.getUsername()));
+        // User information: email, role
+        var info = UserInfo.builder()
+                .email(user.getEmail())
+                .role(user.getRole().name())
+                .build();
+        claims.put("user", info);
+        return claims;
     }
 }
