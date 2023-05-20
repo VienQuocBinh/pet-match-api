@@ -15,17 +15,17 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
-import petmatch.service.JwtService;
+import petmatch.service.implementation.JwtServiceImpl;
 
 import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtService jwtService;
+    private final JwtServiceImpl jwtService;
     private final UserDetailsService userDetailsService;
     private final HandlerExceptionResolver exceptionResolver;
 
-    public JwtAuthenticationFilter(JwtService jwtService,
+    public JwtAuthenticationFilter(JwtServiceImpl jwtService,
                                    UserDetailsService userDetailsService,
                                    @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver) {
         this.jwtService = jwtService;

@@ -26,7 +26,7 @@ public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(
                 ApiError.builder()
                         .httpStatus(HttpStatus.UNAUTHORIZED)
-                        .message("Authentication failed: " + exception.getMessage())
+                        .message("Authentication failed: " + exception.getClass().getName() + ". " + exception.getMessage())
                         .build());
     }
 
