@@ -2,62 +2,48 @@ package petmatch.service.suggestion;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import petmatch.model.Interests;
+import petmatch.model.Match;
 import petmatch.model.Profile;
+import petmatch.service.InterestService;
+import petmatch.service.MatchService;
 import petmatch.service.ProfileService;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class SuggestionService {
-    //    private final AerospikeDatabase database;
     private final ProfileService profileService;
-
-//    public SuggestionService() {
-//        this.database = new AerospikeDatabase();
-//    }
+    private final InterestService interestService;
+    private final MatchService matchService;
 
     public List<Profile> suggestProfiles(Profile myProfile) {
-//        List<Match> previousMatches = database.getPreviousMatches(myProfile);
-//        List<Interests> interests = database.getInterests(myProfile);
-
+        // Get the list of matched profiles
+        List<Match> previousMatches = matchService.getPreviousMatches(myProfile);
         // Retrieve profile IDs from previous matches
-//        Set<String> matchedProfileIds = previousMatches.stream()
-//                .map(match -> match.getMatchTo().getId().toString())
-//                .collect(Collectors.toSet());
+        Set<String> matchedProfileIds = previousMatches.stream()
+                .map(match -> match.getMatchTo().getId().toString())
+                .collect(Collectors.toSet());
+        // Get interests of profile
+        List<Interests> interests = interestService.getInterestsByProfile(myProfile);
 
-        // Retrieve profiles of users with similar interests
-//        List<Profile> suggestedProfiles = new ArrayList<>();
-//        for (Interests interest : interests) {
-//            List<Profile> profilesWithInterest = database.getProfilesByInterest(interest);
-//
-//            // Filter out profiles that have been previously matched
-//            List<Profile> filteredProfiles = profilesWithInterest.stream()
-//                    .filter(profile -> !matchedProfileIds.contains(profile.getId().toString()))
-//                    .toList();
-//
-//            suggestedProfiles.addAll(filteredProfiles);
-//        }
-
-        // Sort suggested profiles by a scoring metric (e.g., similarity score, relevance)
-//        suggestedProfiles.sort(Comparator.comparingDouble(profile -> calculateSimilarityScore(myProfile, profile)));
-        // Return a list of suggested profiles
-//*************
         // Get list of profiles base on interest excepted matched profiles
         List<Profile> suggestedProfiles = new ArrayList<>();
-//        for (Interests interest : interests) {
-//            List<Profile> profilesWithInterest = database.getProfilesByInterest(interest);
-//
-//            // Filter out profiles that have been previously matched
-//            List<Profile> filteredProfiles = profilesWithInterest.stream()
-//                    .filter(profile -> !matchedProfileIds.contains(profile.getId().toString()))
-//                    .toList();
-//
-//            suggestedProfiles.addAll(filteredProfiles);
-//        }
+        for (Interests interest : interests) {
+            List<Profile> profilesWithInterest = profileService.getProfilesByInterest(interest);
+
+            // Filter out profiles that have been previously matched
+            List<Profile> filteredProfiles = profilesWithInterest.stream()
+                    .filter(profile -> !matchedProfileIds.contains(profile.getId().toString()))
+                    .toList();
+
+            suggestedProfiles.addAll(filteredProfiles);
+        }
 
         // Sort suggested profiles by a scoring metric (e.g., similarity score, relevance)
         suggestedProfiles.sort(Comparator.comparingDouble(profile -> calculateSimilarityScore(myProfile, profile)));
@@ -78,24 +64,25 @@ public class SuggestionService {
         return interestsScore + profileAttributesScore;
     }
 
-    private int calculateAgeDifference(Date birthday, Date birthday1) {
-        return 0;
+    private int calculateAgeDifference(Date myBirthday, Date otherBirthday) {
+        LocalDate myLocalDate = myBirthday.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate otherLocalDate = otherBirthday.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Period period = Period.between(myLocalDate, otherLocalDate);
+        return period.getYears();
     }
 
     private double calculateInterestsScore(Profile myProfile, Profile profile) {
         // Retrieve the interests of the user and the profile
-//        List<Interests> userInterests = database.getInterests(myProfile);
-//        List<Interests> profileInterests = profile.getInterests();
+        List<Interests> userInterests = interestService.getInterestsByProfile(myProfile);
+        List<Interests> profileInterests = interestService.getInterestsByProfile(profile);
 
         // Calculate the number of shared interests
-//        long sharedInterestsCount = userInterests.stream()
-//                .filter(profileInterests::contains)
-//                .count();
+        long sharedInterestsCount = userInterests.stream()
+                .filter(profileInterests::contains)
+                .count();
 
         // Calculate the score based on the number of shared interests
-
-//        return sharedInterestsCount / (double) userInterests.size();
-        return 0.0;
+        return sharedInterestsCount / (double) userInterests.size();
     }
 
     private double calculateProfileAttributesScore(Profile myProfile, Profile profile) {

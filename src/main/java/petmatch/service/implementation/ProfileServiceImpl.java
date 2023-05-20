@@ -7,7 +7,6 @@ import petmatch.api.request.ProfileRequest;
 import petmatch.api.response.ProfileDetailResponse;
 import petmatch.api.response.ProfileResponse;
 import petmatch.configuration.exception.EntityNotFoundException;
-import petmatch.configuration.exception.InvalidArgumentException;
 import petmatch.mapper.ProfileMapper;
 import petmatch.model.Breed;
 import petmatch.model.Gallery;
@@ -20,10 +19,7 @@ import petmatch.repository.ProfileRepository;
 import petmatch.service.ProfileService;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +59,7 @@ public class ProfileServiceImpl implements ProfileService {
         var breed = breedRepository.findById(profile.getBreed().getId()).orElseThrow(() -> new EntityNotFoundException(Breed.class, "Breed", "not found"));
         profile.setBreed(breed);
         var res = profileRepository.save(profile);
-        var response =  modelMapper.map(res, ProfileDetailResponse.class);
+        var response = modelMapper.map(res, ProfileDetailResponse.class);
         if (request.getInterests() != null && !request.getInterests().isEmpty()) {
             var interests = request.getInterests().stream().map(interest -> Interests.builder().breed(interest).profile(res).build()).toList();
             var interestsList = interestRepository.saveAll(interests);
@@ -96,5 +92,17 @@ public class ProfileServiceImpl implements ProfileService {
             response.setGallery(ProfileMapper.buildGalleryResponse(galleryList));
         }
         return response;
+    }
+
+    @Override
+    public List<Profile> getProfilesByInterest(Interests interests) {
+        Optional<List<Profile>> profiles = profileRepository.findAllByInterests(interests);
+        return profiles.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public Profile getProfileById(UUID id) {
+        return profileRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Profile.class, "id", id));
     }
 }
