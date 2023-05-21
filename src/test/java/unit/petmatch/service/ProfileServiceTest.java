@@ -4,7 +4,6 @@ package unit.petmatch.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.DoNotMock;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -15,7 +14,6 @@ import petmatch.api.response.ProfileDetailResponse;
 import petmatch.api.response.ProfileResponse;
 import petmatch.configuration.constance.Gender;
 import petmatch.configuration.exception.EntityNotFoundException;
-import petmatch.configuration.exception.InvalidArgumentException;
 import petmatch.model.Breed;
 import petmatch.model.Profile;
 import petmatch.model.Species;
@@ -31,7 +29,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

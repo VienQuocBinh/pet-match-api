@@ -10,7 +10,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     hibernate:
-      ddl-auto: create-drop
+      #disable this to run flyway. If need to change anything to database, please create new flyway script to run
+      ddl-auto: none
     show-sql: false
   profiles:
     default: local
@@ -18,3 +19,16 @@ server:
   port: '8080'
   servlet:
     context-path: /pet-match
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+security:
+  jwt:
+    secret: '556A586E3272357538782F4125442A472D4B6150645367566B59703373367639'
+    expiration: 3600000 #1h
+    refresh-token:
+      expiration: 604800000 #7 days
+firebase:
+  google-credentials: petmatch-6e802-firebase-adminsdk-akcbv-e6b8e0ed3d.json
+  bucket-name: petmatch-6e802.appspot.com
+  image-url: https://firebasestorage.googleapis.com/v0/b/${firebase.bucket-name}/o/%s?alt=media
