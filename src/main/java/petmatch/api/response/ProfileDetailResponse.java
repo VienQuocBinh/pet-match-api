@@ -2,6 +2,7 @@ package petmatch.api.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
@@ -21,10 +22,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProfileDetailResponse {
+    @JsonProperty("id")
     private UUID profileId;
     private String name;
     private Breed breed;
-
     private Double height;
     private String avatar;
     private Double weight;
