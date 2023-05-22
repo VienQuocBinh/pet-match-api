@@ -36,3 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 /.jpb/persistence-units.xml
+
+### Firebase ignore config files ###
+### run git rm --cached .\src\main\resources\petmatch-6e802-firebase-adminsdk-akcbv-e6b8e0ed3d.json ###
+src/main/resources/petmatch-6e802-firebase-adminsdk-akcbv-e6b8e0ed3d.json
