@@ -26,19 +26,19 @@ public class ProfileController {
     private final ProfileService profileService;
     private final SuggestionService suggestionService;
 
-    @GetMapping("/v1/profiles/user/{userId}")
+    @GetMapping("/api/v1/profiles/user/{userId}")
     public ResponseEntity<List<ProfileResponse>> getProfileList(@PathVariable final String userId) {
         log.info("get profile list by id " + userId);
         return new ResponseEntity<>(profileService.getProfilesByUserId(userId), HttpStatus.OK);
     }
 
-    @GetMapping("/v1/profiles/{profileId}")
+    @GetMapping("/api/v1/profiles/{profileId}")
     public ResponseEntity<ProfileDetailResponse> getProfileDetails(@PathVariable final UUID profileId) {
         log.info("get profile detail by id: " + profileId);
         return new ResponseEntity<>(profileService.getProfileDetail(profileId), HttpStatus.OK);
     }
 
-    @PostMapping("/v1/profiles")
+    @PostMapping("/api/v1/profiles")
     public ResponseEntity<ProfileDetailResponse> createProfileDetail(
             @RequestBody @Valid ProfileRequest profile
     ) {
@@ -46,7 +46,7 @@ public class ProfileController {
         return new ResponseEntity<>(profileService.createProfileDetail(profile), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/v1/profiles")
+    @PatchMapping("/api/v1/profiles")
     public ResponseEntity<ProfileDetailResponse> updateProfileDetail(
             @RequestBody @Valid ProfileRequest profile
     ) {
