@@ -12,7 +12,7 @@ import petmatch.configuration.constance.TokenType;
 @Entity
 public class Token {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @Column(unique = true)

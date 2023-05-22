@@ -1,3 +1,8 @@
+create sequence public.token_seq
+    increment by 50;
+
+alter sequence public.token_seq owner to "user";
+
 create table public.species
 (
     id   uuid         not null
@@ -29,7 +34,7 @@ create table public."user"
     email      varchar(40)  not null,
     is_online  boolean,
     password   varchar(100) not null,
-    phone      varchar(10),
+    phone      varchar(15),
     role       varchar(255),
     updated_ts timestamp(6)
 );
