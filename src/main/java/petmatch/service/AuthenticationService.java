@@ -32,5 +32,5 @@ public interface AuthenticationService {
      * @param response {@code HttpServletResponse}
      * @throws IOException exception if an I/O error occurs
      */
-    void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    AuthenticationResponse refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
 }
