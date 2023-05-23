@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import petmatch.repository.TokenRepository;
 import petmatch.service.implementation.JwtServiceImpl;
 
 import java.io.IOException;
@@ -25,12 +26,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final HandlerExceptionResolver exceptionResolver;
 
+    private final TokenRepository tokenRepository;
+
     public JwtAuthenticationFilter(JwtServiceImpl jwtService,
                                    UserDetailsService userDetailsService,
-                                   @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver) {
+                                   @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver, TokenRepository tokenRepository) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         this.exceptionResolver = exceptionResolver;
+        this.tokenRepository = tokenRepository;
     }
 
     @Override
@@ -51,7 +55,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 // Get user from DB
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-                if (jwtService.isTokenValid(jwtToken, userDetails)) {
+                var isTokenValid = tokenRepository.findByToken(jwtToken)
+                        .map(t -> !t.isExpired() && !t.isRevoked())
+                        .orElse(false);
+
+                if (jwtService.isTokenValid(jwtToken, userDetails) && isTokenValid) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
