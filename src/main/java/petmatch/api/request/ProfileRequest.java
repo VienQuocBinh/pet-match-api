@@ -1,6 +1,7 @@
 package petmatch.api.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
@@ -21,6 +22,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfileRequest {
+    @NotNull
+    @JsonProperty("user-id")
+    private String userId;
     @NotNull
     private Breed breed;
     @NotNull

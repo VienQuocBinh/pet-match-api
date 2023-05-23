@@ -1,5 +1,5 @@
 INSERT INTO public."user" (id, created_ts, email, password, phone, updated_ts) VALUES ('U4Gnn6koanStHJUKhMmYJBh23Tq1', '2023-05-16 05:22:06.000000', 'thuyenvuanh2412@gmail.com', '123456789', '0795870939', '2023-05-16 05:22:55.000000');
-INSERT INTO public."user" (id, created_ts, email, password, phone, updated_ts) VALUES ('48TBAFDw4zW6jKs5OBKD0wV5g7J3', '2023-05-16 05:22:06.000000', 'anhthuyn2412@gmail.com', '123456789', '0123456789', '2023-05-16 05:22:55.000000');
+-- INSERT INTO public."user" (id, created_ts, email, password, phone, updated_ts) VALUES ('48TBAFDw4zW6jKs5OBKD0wV5g7J3', '2023-05-16 05:22:06.000000', 'anhthuyn2412@gmail.com', '123456789', '0123456789', '2023-05-16 05:22:55.000000');
 INSERT INTO public."species" (id, name) values ('d5652886-f36f-11ed-a05b-0242ac120003', 'Chó');
 INSERT INTO public."species" (id, name) values ('d5652b1a-f36f-11ed-a05b-0242ac120003', 'Mèo');
 INSERT INTO public."species" (id, name) values ('d5652c64-f36f-11ed-a05b-0242ac120003', 'Cá');
