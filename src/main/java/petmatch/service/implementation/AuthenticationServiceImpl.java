@@ -1,6 +1,5 @@
 package petmatch.service.implementation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -75,7 +74,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     new UsernamePasswordAuthenticationToken(
                             payload.getEmail(),
                             payload.getEmail())).getPrincipal();
-            user = userRepository.findByEmail(userFirebase.getEmail()).orElse(new User());
+            user = userRepository.findByEmail(userFirebase.getEmail()).orElseThrow();
         } catch (AuthenticationException e) {
             // create new user
             user = userRepository.save(User.builder()
@@ -88,8 +87,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getClass().getName() + ". " + e.getMessage());
         }
+        user.setIsOnline(true);
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
+        revokeAllUserTokens(user);
+        saveUserToken(user, jwtToken);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
@@ -97,12 +99,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public AuthenticationResponse refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String userEmail;
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return;
+            throw new InternalServerErrorException("Invalid auth header: not a Bearer");
         }
         refreshToken = authHeader.replace("Bearer ", "");
         userEmail = jwtService.extractUsername(refreshToken);
@@ -115,13 +117,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 revokeAllUserTokens(user);
                 // add new access token to the user
                 saveUserToken(user, accessToken);
-                var authResponse = AuthenticationResponse.builder()
+                return AuthenticationResponse.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
                         .build();
-                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
             }
         }
+        throw new InternalServerErrorException("Can not extract email from refresh token");
     }
 
     /**

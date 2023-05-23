@@ -30,13 +30,13 @@ public class User implements UserDetails {
     private String id; // From Firebase
     @Email(message = "Invalid email address")
     @NotNull
-    @Length(min = 5, max = 40)
+    @Length(min = 5, max = 50)
     private String email;
     @NotNull
-    @Length(min = 3, max = 100)
+    @Length(min = 3, max = 150)
     private String password;
     @Unique
-    @Length(max = 10)
+    @Length(max = 15)
     private String phone;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Address> addresses;
@@ -57,6 +57,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
+
+    @Builder.Default
+    private Boolean isOnline = false;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
