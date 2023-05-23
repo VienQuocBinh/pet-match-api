@@ -22,7 +22,7 @@ create table if not exists public."user"
     created_ts timestamp(6) not null,
     email      varchar(40)  not null,
     password   varchar(100) not null,
-    phone      varchar(10),
+    phone      varchar(12),
     role       varchar(255),
     updated_ts timestamp(6)
 );

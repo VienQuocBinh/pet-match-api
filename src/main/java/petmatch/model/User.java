@@ -36,7 +36,7 @@ public class User implements UserDetails {
     @Length(min = 3, max = 100)
     private String password;
     @Unique
-    @Length(max = 10)
+    @Length(max = 12)
     private String phone;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Address> addresses;
