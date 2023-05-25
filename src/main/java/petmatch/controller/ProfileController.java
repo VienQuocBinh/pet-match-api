@@ -13,7 +13,7 @@ import petmatch.api.response.ProfileDetailResponse;
 import petmatch.api.response.ProfileResponse;
 import petmatch.model.Profile;
 import petmatch.service.ProfileService;
-import petmatch.service.suggestion.SuggestionService;
+import petmatch.service.SuggestionService;
 
 import java.util.List;
 import java.util.UUID;
