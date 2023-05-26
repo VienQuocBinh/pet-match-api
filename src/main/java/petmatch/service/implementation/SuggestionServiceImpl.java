@@ -39,9 +39,11 @@ public class SuggestionServiceImpl implements SuggestionService {
         for (Interests interest : interests) {
             List<Profile> profilesWithInterest = profileService.getProfilesByInterest(interest);
 
-            // Filter out profiles that have been previously matched
+            // Filter out profiles that have been previously matched and profiles belong to myProfile
             List<Profile> filteredProfiles = profilesWithInterest.stream()
-                    .filter(profile -> !matchedProfileIds.contains(profile.getId().toString()))
+                    .filter(profile ->
+                            !matchedProfileIds.contains(profile.getId().toString())
+                                    && !profile.getUser().getId().equals(myProfile.getUser().getId()))
                     .toList();
 
             suggestedProfiles.addAll(filteredProfiles);
