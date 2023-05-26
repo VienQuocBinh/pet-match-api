@@ -6,12 +6,15 @@ import org.springframework.stereotype.Service;
 import petmatch.api.response.MatchResponse;
 import petmatch.configuration.exception.InternalServerErrorException;
 import petmatch.model.Match;
+import petmatch.model.Notification;
 import petmatch.model.Profile;
 import petmatch.repository.MatchRepository;
 import petmatch.service.MatchService;
+import petmatch.service.NotificationService;
 import petmatch.service.ProfileService;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +24,7 @@ public class MatchServiceImpl implements MatchService {
     private final MatchRepository matchRepository;
     private final ProfileService profileService;
     private final ModelMapper mapper;
+    private final NotificationService notificationService;
 
     @Override
     public List<Match> getPreviousMatches(Profile profile) {
@@ -45,6 +49,20 @@ public class MatchServiceImpl implements MatchService {
         var m = mapper.map(match, MatchResponse.class);
         m.setMatchFrom(fromProfileId);
         m.setMatchTo(toProfileId);
+        buildNotification(toProfile);
         return m;
+    }
+
+    private void buildNotification(Profile profile) {
+        String LOGO_URL = "https://firebasestorage.googleapis.com/v0/b/petmatch-6e802.appspot.com/o/petmatch-logo.jpg?alt=media";
+        String SUBJECT = "Petmatch";
+        String CONTENT = "You got a new matched!";
+        notificationService.sendNotification(Notification.builder()
+                .subject(SUBJECT)
+                .content(CONTENT)
+                .data(new HashMap<>())
+                .imageUrl(LOGO_URL)
+                .registrationTokens(List.of(profile.getUser().getFcmToken()))
+                .build());
     }
 }

@@ -16,7 +16,7 @@ import petmatch.service.MatchService;
 public class MatchController {
     private final MatchService matchService;
 
-    @PostMapping("/profile")
+    @PostMapping
     public ResponseEntity<MatchResponse> matchToProfile(@RequestBody MatchRequest request) {
         return ResponseEntity.ok(matchService.createMatchOfProfile(request.getMatchFromProfileId(), request.getMatchToProfileId()));
     }
