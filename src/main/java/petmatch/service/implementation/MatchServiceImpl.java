@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +30,14 @@ public class MatchServiceImpl implements MatchService {
     @Override
     public List<Match> getPreviousMatches(Profile profile) {
         return matchRepository.findAllByMatchTo(profile).orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Match> getAllMatches(UUID profileId) {
+        var profile = profileService.getProfileById(profileId);
+        return Stream.concat(profile.getMatchTo().stream(), profile.getMatchFrom().stream())
+                .distinct()
+                .toList();
     }
 
     @Override

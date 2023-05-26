@@ -2,13 +2,13 @@ package petmatch.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import petmatch.api.request.MatchRequest;
 import petmatch.api.response.MatchResponse;
 import petmatch.service.MatchService;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,5 +19,21 @@ public class MatchController {
     @PostMapping
     public ResponseEntity<MatchResponse> matchToProfile(@RequestBody MatchRequest request) {
         return ResponseEntity.ok(matchService.createMatchOfProfile(request.getMatchFromProfileId(), request.getMatchToProfileId()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<List<MatchResponse>> getMatchesProfile(@PathVariable UUID id) {
+        var response = matchService.getAllMatches(id)
+                .stream()
+                .map(element -> MatchResponse.builder()
+                        .id(element.getId())
+                        .matchFrom(element.getMatchFrom().getId())
+                        .matchTo(element.getMatchTo().getId())
+                        .createdTimestamp(element.getCreatedTimestamp())
+                        .updatedTimestamp(element.getUpdatedTimestamp())
+                        .build())
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 }
