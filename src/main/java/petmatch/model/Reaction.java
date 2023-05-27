@@ -37,4 +37,6 @@ public class Reaction {
     @Column(name = "updated_ts")
     @LastModifiedDate
     private Date updatedTimestamp;
+    @NotNull
+    private UUID createdBy;
 }

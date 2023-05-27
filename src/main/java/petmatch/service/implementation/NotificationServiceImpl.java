@@ -3,7 +3,7 @@ package petmatch.service.implementation;
 import com.google.firebase.messaging.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import petmatch.model.Notification;
+import petmatch.api.domain.Notification;
 import petmatch.service.NotificationService;
 
 import java.util.ArrayList;

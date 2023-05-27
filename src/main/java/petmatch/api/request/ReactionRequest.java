@@ -9,7 +9,8 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MatchRequest {
-    private UUID matchFromProfileId; // my profile
-    private UUID matchToProfileId;
+public class ReactionRequest {
+    private String comment;
+    private UUID profileId;
+    private UUID createdBy;
 }

@@ -1,4 +1,4 @@
-package petmatch.model;
+package petmatch.api.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
