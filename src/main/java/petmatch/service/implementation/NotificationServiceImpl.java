@@ -4,9 +4,11 @@ import com.google.firebase.messaging.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import petmatch.api.domain.Notification;
+import petmatch.model.Profile;
 import petmatch.service.NotificationService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -45,5 +47,18 @@ public class NotificationServiceImpl implements NotificationService {
             log.info("List of tokens that caused failures: " + failedTokens);
         }
         return batchResponse;
+    }
+
+    @Override
+    public void sendNotification(Profile profile, String content) {
+        String LOGO_URL = "https://firebasestorage.googleapis.com/v0/b/petmatch-6e802.appspot.com/o/petmatch-logo.jpg?alt=media";
+        String SUBJECT = "Petmatch";
+        sendNotification(Notification.builder()
+                .subject(SUBJECT)
+                .content(content)
+                .data(new HashMap<>())
+                .imageUrl(LOGO_URL)
+                .registrationTokens(List.of(profile.getUser().getFcmToken()))
+                .build());
     }
 }

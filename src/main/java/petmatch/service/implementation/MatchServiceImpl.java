@@ -58,7 +58,9 @@ public class MatchServiceImpl implements MatchService {
         var m = mapper.map(match, MatchResponse.class);
         m.setMatchFrom(fromProfileId);
         m.setMatchTo(toProfileId);
-        buildNotification(toProfile);
+//        buildNotification(toProfile);
+
+        notificationService.sendNotification(toProfile, "You got a new matched!");
         return m;
     }
 

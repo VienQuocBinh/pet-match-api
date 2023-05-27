@@ -7,6 +7,7 @@ import petmatch.api.response.ReactionResponse;
 import petmatch.configuration.exception.InternalServerErrorException;
 import petmatch.model.Reaction;
 import petmatch.repository.ReactionRepository;
+import petmatch.service.NotificationService;
 import petmatch.service.ProfileService;
 import petmatch.service.ReactionService;
 
@@ -15,6 +16,7 @@ import petmatch.service.ReactionService;
 public class ReactionServiceImpl implements ReactionService {
     private final ReactionRepository reactionRepository;
     private final ProfileService profileService;
+    private final NotificationService notificationService;
 
     @Override
     public ReactionResponse createReaction(ReactionRequest request) {
@@ -30,6 +32,8 @@ public class ReactionServiceImpl implements ReactionService {
                 .createdBy(request.getCreatedBy())
                 .profile(profile)
                 .build());
+
+        notificationService.sendNotification(profile, "You got a new comment!");
 
         return ReactionResponse.builder()
                 .comment(request.getComment())
