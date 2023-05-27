@@ -135,6 +135,7 @@ create table public.reaction
     id         uuid         not null
         primary key,
     comment    varchar(255),
+    created_by uuid         not null,
     created_ts timestamp(6) not null,
     updated_ts timestamp(6) not null,
     profile_id uuid
