@@ -102,7 +102,7 @@ public class SuggestionServiceImpl implements SuggestionService {
         double score = 0.0;
 
         // Increment score based on criteria match and relative weights
-        if (myProfile.getGender() == profile.getGender()) {
+        if (myProfile.getGender() != profile.getGender()) {
             score += genderWeight;
         }
 

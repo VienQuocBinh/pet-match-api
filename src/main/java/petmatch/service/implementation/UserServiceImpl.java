@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import petmatch.api.response.UserResponse;
+import petmatch.configuration.exception.EntityNotFoundException;
 import petmatch.model.User;
 import petmatch.repository.UserRepository;
 import petmatch.service.UserService;
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUserById(String id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Id " + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException(User.class, "id", id));
 
         return modelMapper.map(user, UserResponse.class);
     }
