@@ -60,6 +60,8 @@ public class User implements UserDetails {
 
     @Builder.Default
     private Boolean isOnline = false;
+    @NotNull
+    private String fcmToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

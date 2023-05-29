@@ -31,9 +31,10 @@ create table public."user"
     id         varchar(255) not null
         primary key,
     created_ts timestamp(6) not null,
-    email      varchar(40)  not null,
+    email      varchar(50)  not null,
+    fcm_token  varchar(255) not null,
     is_online  boolean,
-    password   varchar(100) not null,
+    password   varchar(150) not null,
     phone      varchar(15),
     role       varchar(255),
     updated_ts timestamp(6)
@@ -134,6 +135,7 @@ create table public.reaction
     id         uuid         not null
         primary key,
     comment    varchar(255),
+    created_by uuid         not null,
     created_ts timestamp(6) not null,
     updated_ts timestamp(6) not null,
     profile_id uuid

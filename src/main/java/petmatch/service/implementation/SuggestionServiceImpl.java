@@ -1,4 +1,4 @@
-package petmatch.service.suggestion;
+package petmatch.service.implementation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -8,6 +8,7 @@ import petmatch.model.Profile;
 import petmatch.service.InterestService;
 import petmatch.service.MatchService;
 import petmatch.service.ProfileService;
+import petmatch.service.SuggestionService;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -17,11 +18,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class SuggestionService {
+public class SuggestionServiceImpl implements SuggestionService {
     private final ProfileService profileService;
     private final InterestService interestService;
     private final MatchService matchService;
 
+    @Override
     public List<Profile> suggestProfiles(Profile myProfile) {
         // Get the list of matched profiles
         List<Match> previousMatches = matchService.getPreviousMatches(myProfile);
@@ -37,9 +39,11 @@ public class SuggestionService {
         for (Interests interest : interests) {
             List<Profile> profilesWithInterest = profileService.getProfilesByInterest(interest);
 
-            // Filter out profiles that have been previously matched
+            // Filter out profiles that have been previously matched and profiles belong to myProfile
             List<Profile> filteredProfiles = profilesWithInterest.stream()
-                    .filter(profile -> !matchedProfileIds.contains(profile.getId().toString()))
+                    .filter(profile ->
+                            !matchedProfileIds.contains(profile.getId().toString())
+                                    && !profile.getUser().getId().equals(myProfile.getUser().getId()))
                     .toList();
 
             suggestedProfiles.addAll(filteredProfiles);

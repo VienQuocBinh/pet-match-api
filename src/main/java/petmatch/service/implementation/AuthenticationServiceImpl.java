@@ -26,8 +26,6 @@ import petmatch.service.JwtService;
 import petmatch.service.firebase.TokenVerifier;
 import petmatch.service.firebase.UserManagementService;
 
-import java.io.IOException;
-
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -82,12 +80,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .email(userFirebase.getEmail())
                     .password(passwordEncoder.encode(userFirebase.getEmail()))
                     .phone(userFirebase.getPhone())
+                    .fcmToken(request.getFcmToken())
                     .role(Role.USER)
                     .build());
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getClass().getName() + ". " + e.getMessage());
         }
         user.setIsOnline(true);
+        userRepository.save(user);
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
@@ -99,7 +99,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AuthenticationResponse refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public AuthenticationResponse refreshToken(HttpServletRequest request, HttpServletResponse response) {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String userEmail;
