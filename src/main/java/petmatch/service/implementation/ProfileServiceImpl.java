@@ -12,15 +12,14 @@ import petmatch.model.Breed;
 import petmatch.model.Gallery;
 import petmatch.model.Interests;
 import petmatch.model.Profile;
-import petmatch.repository.BreedRepository;
-import petmatch.repository.GalleryRepository;
-import petmatch.repository.InterestRepository;
-import petmatch.repository.ProfileRepository;
-import petmatch.repository.UserRepository;
+import petmatch.repository.*;
 import petmatch.service.ProfileService;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -99,14 +98,13 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<Profile> getProfilesByInterest(Interests interests) {
-        Optional<List<Profile>> profiles = profileRepository.findAllByInterests(interests);
-        return profiles.orElse(Collections.emptyList());
-    }
-
-    @Override
     public Profile getProfileById(UUID id) {
         return profileRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Profile.class, "id", id));
+    }
+
+    @Override
+    public List<Profile> getProfiles() {
+        return profileRepository.findAll();
     }
 }

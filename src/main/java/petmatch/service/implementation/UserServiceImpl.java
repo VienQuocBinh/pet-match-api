@@ -55,12 +55,9 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EntityNotFoundException(User.class, "email", request.getEmail()));
         var address = addressRepository.findByUser(user)
                 .orElseThrow(() -> new EntityNotFoundException(Address.class, "email", request.getEmail()));
-//        address.setAddress(request.getAddress().getAddress());
-//        address.setLatitude(request.getAddress().getLatitude());
-//        address.setLongitude(request.getAddress().getLongitude());
-//        address.setGeoHash(DistanceUtil.toGeoHashBase(request.getAddress().getLatitude(), request.getAddress().getLongitude()));
-
-        address = addressService.updateAddress(modelMapper.map(request.getAddress(), Address.class), address.getId());
+        address = addressService.updateAddress(
+                modelMapper.map(request.getAddress(), Address.class),
+                address.getId());
 
         user.setPhone(request.getPhone());
         user.setAddresses(List.of(address));

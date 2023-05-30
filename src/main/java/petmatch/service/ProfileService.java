@@ -3,7 +3,6 @@ package petmatch.service;
 import petmatch.api.request.ProfileRequest;
 import petmatch.api.response.ProfileDetailResponse;
 import petmatch.api.response.ProfileResponse;
-import petmatch.model.Interests;
 import petmatch.model.Profile;
 
 import java.util.List;
@@ -18,7 +17,7 @@ public interface ProfileService {
 
     ProfileDetailResponse updateProfileDetail(ProfileRequest request);
 
-    List<Profile> getProfilesByInterest(Interests interests);
-
     Profile getProfileById(UUID id);
+
+    List<Profile> getProfiles();
 }

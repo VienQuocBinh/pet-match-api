@@ -31,26 +31,19 @@ public class SuggestionServiceImpl implements SuggestionService {
         Set<String> matchedProfileIds = previousMatches.stream()
                 .map(match -> match.getMatchTo().getId().toString())
                 .collect(Collectors.toSet());
-        // Get interests of profile
-        List<Interests> interests = interestService.getInterestsByProfile(myProfile);
 
-        // Get list of profiles base on interest excepted matched profiles
-        List<Profile> suggestedProfiles = new ArrayList<>();
-        for (Interests interest : interests) {
-            List<Profile> profilesWithInterest = profileService.getProfilesByInterest(interest);
+        // Get list of profiles excepted matched profiles and my profiles
+        var list = profileService.getProfiles();
+        List<Profile> filteredProfiles = list.stream()
+                .filter(profile ->
+                        !matchedProfileIds.contains(profile.getId().toString())
+                                && !profile.getUser().getId().equals(myProfile.getUser().getId()))
+                .toList();
 
-            // Filter out profiles that have been previously matched and profiles belong to myProfile
-            List<Profile> filteredProfiles = profilesWithInterest.stream()
-                    .filter(profile ->
-                            !matchedProfileIds.contains(profile.getId().toString())
-                                    && !profile.getUser().getId().equals(myProfile.getUser().getId()))
-                    .toList();
-
-            suggestedProfiles.addAll(filteredProfiles);
-        }
-
+        List<Profile> suggestedProfiles = new ArrayList<>(filteredProfiles);
         // Sort suggested profiles by a scoring metric (e.g., similarity score, relevance)
         suggestedProfiles.sort(Comparator.comparingDouble(profile -> calculateSimilarityScore(myProfile, profile)));
+        Collections.reverse(suggestedProfiles); // DESC order
         return suggestedProfiles;
     }
 
@@ -62,9 +55,7 @@ public class SuggestionServiceImpl implements SuggestionService {
         // Calculate the similarity score based on the factors
         double interestsScore = calculateInterestsScore(myProfile, profile) * interestsFactor;
         double profileAttributesScore = calculateProfileAttributesScore(myProfile, profile) * profileAttributesFactor;
-//
-//        // Combine the scores to get the overall similarity score
-//
+        // Combine the scores to get the overall similarity score
         return interestsScore + profileAttributesScore;
     }
 
@@ -76,17 +67,14 @@ public class SuggestionServiceImpl implements SuggestionService {
     }
 
     private double calculateInterestsScore(Profile myProfile, Profile profile) {
-        // Retrieve the interests of the user and the profile
-        List<Interests> userInterests = interestService.getInterestsByProfile(myProfile);
-        List<Interests> profileInterests = interestService.getInterestsByProfile(profile);
+        // Retrieve the interests of the user
+        List<Interests> myInterests = interestService.getInterestsByProfile(myProfile);
 
-        // Calculate the number of shared interests
-        long sharedInterestsCount = userInterests.stream()
-                .filter(profileInterests::contains)
-                .count();
-
-        // Calculate the score based on the number of shared interests
-        return sharedInterestsCount / (double) userInterests.size();
+        // If the suggestion profile breed is matching with my profile interest breed then return 100
+        for (Interests myInterest : myInterests) {
+            if (myInterest.getBreed().getId().equals(profile.getBreed().getId())) return 100;
+        }
+        return 0.0;
     }
 
     private double calculateProfileAttributesScore(Profile myProfile, Profile profile) {
@@ -107,20 +95,20 @@ public class SuggestionServiceImpl implements SuggestionService {
         }
 
         int ageDifference = calculateAgeDifference(myProfile.getBirthday(), profile.getBirthday());
-        int minAgeDifference = 18;
-        int maxAgeDifference = 40;
+        int minAgeDifference = 0;
+        int maxAgeDifference = 10;
         if (ageDifference >= minAgeDifference && ageDifference <= maxAgeDifference) {
             score += ageWeight;
         }
 
 
-        Double minWeight = myProfile.getWeight() - 10;
+        double minWeight = myProfile.getWeight() - 10;
         double maxWeight = myProfile.getWeight() + 10;
         if (profile.getWeight() >= minWeight && profile.getWeight() <= maxWeight) {
             score += weightWeight;
         }
 
-        Double minHeight = myProfile.getHeight() - 10;
+        double minHeight = myProfile.getHeight() - 10;
         double maxHeight = myProfile.getHeight() + 10;
         if (profile.getHeight() >= minHeight && profile.getHeight() <= maxHeight) {
             score += heightWeight;
@@ -135,5 +123,4 @@ public class SuggestionServiceImpl implements SuggestionService {
 
         return score;
     }
-
 }
