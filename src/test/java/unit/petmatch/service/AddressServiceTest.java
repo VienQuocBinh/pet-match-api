@@ -11,7 +11,6 @@ public class AddressServiceTest {
     public void getGeoHashString() {
         double lat = 10.864105243235155;
         double lon = 106.7346579351765;
-        int precision = 10;
-        System.out.println(DistanceUtil.toGeoHashBase(lat, lon, precision));
+        System.out.println(DistanceUtil.toGeoHashBase(lat, lon));
     }
 }

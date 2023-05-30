@@ -6,6 +6,7 @@ import petmatch.configuration.constance.Role;
 import petmatch.model.Subscription;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ public class UserResponse {
     private String email;
     //    private String password;
     private String phone;
-    //    private List<Address> addresses;
+    private List<AddressResponse> addresses;
     private Subscription subscription;
     //    private List<Profile> profiles;
     private Date createdTimestamp;

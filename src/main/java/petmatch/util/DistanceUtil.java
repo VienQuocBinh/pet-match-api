@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DistanceUtil {
-    public static String toGeoHashBase(double latitude, double longitude, int precision) {
+    public static String toGeoHashBase(double latitude, double longitude) {
         return GeoHash
-                .withCharacterPrecision(latitude, longitude, precision)
+                .withCharacterPrecision(latitude, longitude, 12)
                 .toBase32();
     }
 }

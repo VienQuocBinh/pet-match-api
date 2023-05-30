@@ -1,5 +1,6 @@
 package petmatch.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ public class AddressController {
     private final AddressService addressService;
 
     @PostMapping
-    public ResponseEntity<AddressResponse> createAddress(@RequestBody AddressRequest request) {
+    public ResponseEntity<AddressResponse> createAddress(@RequestBody @Valid AddressRequest request) {
         return ResponseEntity.status(201).body(addressService.createAddress(request));
     }
 }
