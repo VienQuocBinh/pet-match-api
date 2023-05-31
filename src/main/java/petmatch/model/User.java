@@ -38,8 +38,6 @@ public class User implements UserDetails {
     @Unique
     @Length(max = 15)
     private String phone;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Address> addresses;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Subscription subscription;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -75,7 +73,7 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
+    public @NotNull String getPassword() {
         return password;
     }
 

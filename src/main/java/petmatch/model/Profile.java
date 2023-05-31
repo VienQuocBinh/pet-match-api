@@ -62,4 +62,7 @@ public class Profile {
     private List<Match> matchTo;
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
     private List<Interests> interests;
+    @OneToOne
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
+    private Address address;
 }
