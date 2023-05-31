@@ -3,6 +3,8 @@ package petmatch.api.request;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @Builder
@@ -16,5 +18,5 @@ public class AddressRequest {
     @NotNull
     private Double longitude;
     @NotNull
-    private String userId;
+    private UUID profileId;
 }

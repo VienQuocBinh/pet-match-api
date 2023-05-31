@@ -78,7 +78,6 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileDetailResponse updateProfileDetail(ProfileRequest request) {
-//        validateRequest(request);
         var profile = modelMapper.map(request, Profile.class);
         var breed = breedRepository.findById(profile.getBreed().getId()).orElseThrow(() -> new EntityNotFoundException(Breed.class, "Breed", "not found"));
         profile.setBreed(breed);

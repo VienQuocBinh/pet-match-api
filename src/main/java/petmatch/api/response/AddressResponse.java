@@ -15,5 +15,5 @@ public class AddressResponse {
     private Double latitude;
     private Double longitude;
     private String geoHash;
-    private String userId;
+    private String profileId;
 }
