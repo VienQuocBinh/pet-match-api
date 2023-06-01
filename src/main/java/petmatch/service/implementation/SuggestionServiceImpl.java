@@ -5,10 +5,8 @@ import org.springframework.stereotype.Service;
 import petmatch.model.Interests;
 import petmatch.model.Match;
 import petmatch.model.Profile;
-import petmatch.service.InterestService;
-import petmatch.service.MatchService;
-import petmatch.service.ProfileService;
-import petmatch.service.SuggestionService;
+import petmatch.model.Reaction;
+import petmatch.service.*;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -22,6 +20,7 @@ public class SuggestionServiceImpl implements SuggestionService {
     private final ProfileService profileService;
     private final InterestService interestService;
     private final MatchService matchService;
+    private final ReactionService reactionService;
 
     @Override
     public List<Profile> suggestProfiles(Profile myProfile) {
@@ -32,11 +31,19 @@ public class SuggestionServiceImpl implements SuggestionService {
                 .map(match -> match.getMatchTo().getId().toString())
                 .collect(Collectors.toSet());
 
-        // Get list of profiles excepted matched profiles and my profiles
+        // Get the list of reacted profiles
+        List<Reaction> previousReactions = reactionService.getPreviousReactions(myProfile);
+        // Retrieve profile IDs from previous reactions
+        Set<String> previousReactionsProfileIds = previousReactions.stream()
+                .map(reaction -> reaction.getProfile().getId().toString())
+                .collect(Collectors.toSet());
+
+        // Get list of profiles excepted matched/reacted profiles and my profiles
         var list = profileService.getProfiles();
         List<Profile> filteredProfiles = list.stream()
                 .filter(profile ->
                         !matchedProfileIds.contains(profile.getId().toString())
+                                && !previousReactionsProfileIds.contains(profile.getId().toString())
                                 && !profile.getUser().getId().equals(myProfile.getUser().getId()))
                 .toList();
 

@@ -2,6 +2,10 @@ package petmatch.service;
 
 import petmatch.api.request.ReactionRequest;
 import petmatch.api.response.ReactionResponse;
+import petmatch.model.Profile;
+import petmatch.model.Reaction;
+
+import java.util.List;
 
 public interface ReactionService {
     /**
@@ -12,4 +16,6 @@ public interface ReactionService {
      * @return ReactionResponse
      */
     ReactionResponse createReaction(ReactionRequest request);
+
+    List<Reaction> getPreviousReactions(Profile profile);
 }

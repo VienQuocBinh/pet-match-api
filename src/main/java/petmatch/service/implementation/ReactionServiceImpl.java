@@ -5,11 +5,15 @@ import org.springframework.stereotype.Service;
 import petmatch.api.request.ReactionRequest;
 import petmatch.api.response.ReactionResponse;
 import petmatch.configuration.exception.InternalServerErrorException;
+import petmatch.model.Profile;
 import petmatch.model.Reaction;
 import petmatch.repository.ReactionRepository;
 import petmatch.service.NotificationService;
 import petmatch.service.ProfileService;
 import petmatch.service.ReactionService;
+
+import java.util.Collections;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +47,11 @@ public class ReactionServiceImpl implements ReactionService {
                 .createdTimestamp(reaction.getCreatedTimestamp())
                 .updatedTimestamp(reaction.getUpdatedTimestamp())
                 .build();
+    }
+
+    @Override
+    public List<Reaction> getPreviousReactions(Profile profile) {
+        return reactionRepository.findAllByProfile_Id(profile.getId())
+                .orElse(Collections.emptyList());
     }
 }

@@ -1,5 +1,6 @@
 package petmatch.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,10 @@ public class MatchController {
         return ResponseEntity.ok(matchService.createMatchOfProfile(request.getMatchFromProfileId(), request.getMatchToProfileId()));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/profile/{id}")
+    @Operation(
+            summary = "Get all matching profiles",
+            description = "Including match from and to profile")
     public ResponseEntity<List<MatchResponse>> getMatchesProfile(@PathVariable UUID id) {
         var response = matchService.getAllMatches(id)
                 .stream()
