@@ -11,5 +11,5 @@ import java.util.UUID;
 @Repository
 public interface ReactionRepository extends JpaRepository<Reaction, UUID> {
 
-    Optional<List<Reaction>> findAllByProfile_Id(UUID profileId);
+    Optional<List<Reaction>> findAllByCreatedBy(UUID id);
 }

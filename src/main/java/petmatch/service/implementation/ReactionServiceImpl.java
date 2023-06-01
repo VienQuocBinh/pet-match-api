@@ -51,7 +51,7 @@ public class ReactionServiceImpl implements ReactionService {
 
     @Override
     public List<Reaction> getPreviousReactions(Profile profile) {
-        return reactionRepository.findAllByProfile_Id(profile.getId())
+        return reactionRepository.findAllByCreatedBy(profile.getId())
                 .orElse(Collections.emptyList());
     }
 }
