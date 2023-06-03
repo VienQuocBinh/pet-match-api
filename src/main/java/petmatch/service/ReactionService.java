@@ -2,6 +2,10 @@ package petmatch.service;
 
 import petmatch.api.request.ReactionRequest;
 import petmatch.api.response.ReactionResponse;
+import petmatch.model.Reaction;
+
+import java.util.List;
+import java.util.UUID;
 
 public interface ReactionService {
     /**
@@ -12,4 +16,8 @@ public interface ReactionService {
      * @return ReactionResponse
      */
     ReactionResponse createReaction(ReactionRequest request);
+
+    List<ReactionResponse> getLikedProfilesBy(UUID profileId);
+
+    List<ReactionResponse> getProfilesThatLikes(UUID profileId);
 }

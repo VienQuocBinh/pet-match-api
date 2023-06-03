@@ -17,10 +17,8 @@ import petmatch.configuration.exception.EntityNotFoundException;
 import petmatch.model.Breed;
 import petmatch.model.Profile;
 import petmatch.model.Species;
-import petmatch.repository.BreedRepository;
-import petmatch.repository.GalleryRepository;
-import petmatch.repository.InterestRepository;
-import petmatch.repository.ProfileRepository;
+import petmatch.model.User;
+import petmatch.repository.*;
 import petmatch.service.implementation.ProfileServiceImpl;
 
 import java.sql.Date;
@@ -55,6 +53,9 @@ public class ProfileServiceTest {
 
     @Mock
     private GalleryRepository mockGalleryRepository;
+
+    @Mock
+    private UserRepository mockUserRepository;
 
     @Spy
     private ModelMapper modelMapper;
@@ -114,7 +115,12 @@ public class ProfileServiceTest {
         //given
         ProfileRequest request = buildProfileRequest();
         Profile profile = buildProfileList().get(0);
+        User user = User.builder()
+                .id(UUID.randomUUID().toString())
+                .email("test@test.com")
+                .build();
         Breed breed = buildBreed();
+        when(mockUserRepository.findById(any())).thenReturn(Optional.of(user));
         when(mockProfileRepository.save(any())).thenAnswer(invocation -> profile);
         when(mockBreedRepository.findById(any())).thenReturn(Optional.of(breed));
         //when
