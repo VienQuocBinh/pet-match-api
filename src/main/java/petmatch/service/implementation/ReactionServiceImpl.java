@@ -1,8 +1,10 @@
 package petmatch.service.implementation;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import petmatch.api.request.ReactionRequest;
+import petmatch.api.response.ProfileDetailResponse;
 import petmatch.api.response.ReactionResponse;
 import petmatch.configuration.exception.InternalServerErrorException;
 import petmatch.model.Reaction;
@@ -11,12 +13,17 @@ import petmatch.service.NotificationService;
 import petmatch.service.ProfileService;
 import petmatch.service.ReactionService;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class ReactionServiceImpl implements ReactionService {
     private final ReactionRepository reactionRepository;
     private final ProfileService profileService;
     private final NotificationService notificationService;
+    private final ModelMapper modelMapper;
 
     @Override
     public ReactionResponse createReaction(ReactionRequest request) {
@@ -37,11 +44,17 @@ public class ReactionServiceImpl implements ReactionService {
 
         return ReactionResponse.builder()
                 .comment(request.getComment())
-                .createdBy(request.getCreatedBy())
-                .profileId(request.getProfileId())
-                .createdBy(request.getCreatedBy())
+                .profile(modelMapper.map(profile, ProfileDetailResponse.class))
                 .createdTimestamp(reaction.getCreatedTimestamp())
                 .updatedTimestamp(reaction.getUpdatedTimestamp())
                 .build();
+    }
+
+    @Override
+    public List<ReactionResponse> getPreviousReactions(UUID profileId) {
+        var profile = profileService.getProfileById(profileId);
+        var reactions = reactionRepository.findAllByCreatedBy(profileId)
+                .orElse(Collections.emptyList());
+        return reactions.stream().map(reaction -> modelMapper.map(reaction, ReactionResponse.class)).toList();
     }
 }

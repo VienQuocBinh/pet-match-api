@@ -11,5 +11,6 @@ import java.util.UUID;
 
 @Repository
 public interface MatchRepository extends JpaRepository<Match, UUID> {
-    Optional<List<Match>> findAllByMatchTo(Profile profile);
+
+    Optional<List<Match>> findAllByMatchFrom(Profile profile);
 }

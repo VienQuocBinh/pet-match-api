@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface SuggestionService {
     /**
-     * Suggest all the profiles which are not matched before and not belong to the current User.
+     * Suggest all the profiles which are not matched or reacted before and not belong to the current User.
      *
      * @param myProfile Profile
      * @return {@code List<Profile>}

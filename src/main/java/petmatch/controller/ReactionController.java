@@ -2,13 +2,14 @@ package petmatch.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import petmatch.api.request.ReactionRequest;
+import petmatch.api.response.ProfileResponse;
 import petmatch.api.response.ReactionResponse;
 import petmatch.service.ReactionService;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,5 +21,10 @@ public class ReactionController {
     public ResponseEntity<ReactionResponse> createReaction(@RequestBody ReactionRequest request) {
 
         return ResponseEntity.ok(reactionService.createReaction(request));
+    }
+
+    @GetMapping("/likes/{profileId}")
+    public ResponseEntity<List<ReactionResponse>> getReactionLike(@PathVariable UUID profileId) {
+        return ResponseEntity.ok(reactionService.getPreviousReactions(profileId));
     }
 }

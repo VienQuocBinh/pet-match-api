@@ -10,7 +10,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class Address {
@@ -23,7 +22,6 @@ public class Address {
     private Double latitude;
     @Column(name = "geo_hash")
     private String geoHash;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @OneToOne(mappedBy = "address", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Profile profile;
 }

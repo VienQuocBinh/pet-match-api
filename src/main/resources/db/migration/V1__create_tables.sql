@@ -50,10 +50,7 @@ create table public.address
     address   varchar(255),
     geo_hash  varchar(255),
     latitude  double precision,
-    longitude double precision,
-    user_id   varchar(255)
-        constraint fkibojxnhlre8lcn6ag9a35epr1
-            references public."user"
+    longitude double precision
 );
 
 alter table public.address
@@ -72,6 +69,9 @@ create table public.profile
     name        varchar(100) not null,
     updated_ts  timestamp(6) not null,
     weight      double precision,
+    address_id  uuid
+        constraint fk2hsdsntwy25qr73fsvd7l3wu7
+            references public.address,
     breed_id    uuid
         constraint fkjkh053k1t8hsxswi2cbhcyef2
             references public.breed,
