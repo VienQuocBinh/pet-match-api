@@ -6,6 +6,7 @@ import petmatch.model.Profile;
 import petmatch.model.Reaction;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ReactionService {
     /**
@@ -17,5 +18,5 @@ public interface ReactionService {
      */
     ReactionResponse createReaction(ReactionRequest request);
 
-    List<Reaction> getPreviousReactions(Profile profile);
+    List<ReactionResponse> getPreviousReactions(UUID profileId);
 }

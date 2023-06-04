@@ -6,6 +6,7 @@ import petmatch.model.Interests;
 import petmatch.model.Match;
 import petmatch.model.Profile;
 import petmatch.model.Reaction;
+import petmatch.repository.ReactionRepository;
 import petmatch.service.*;
 
 import java.time.LocalDate;
@@ -20,7 +21,7 @@ public class SuggestionServiceImpl implements SuggestionService {
     private final ProfileService profileService;
     private final InterestService interestService;
     private final MatchService matchService;
-    private final ReactionService reactionService;
+    private final ReactionRepository reactionRepository;
 
     @Override
     public List<Profile> suggestProfiles(Profile myProfile) {
@@ -32,7 +33,7 @@ public class SuggestionServiceImpl implements SuggestionService {
                 .collect(Collectors.toSet());
 
         // Get the list of reacted profiles
-        List<Reaction> previousReactions = reactionService.getPreviousReactions(myProfile);
+        List<Reaction> previousReactions = reactionRepository.findAllByCreatedBy(myProfile.getId()).orElse(Collections.emptyList());
         // Retrieve profile IDs from previous reactions
         Set<String> previousReactionsProfileIds = previousReactions.stream()
                 .map(reaction -> reaction.getProfile().getId().toString())

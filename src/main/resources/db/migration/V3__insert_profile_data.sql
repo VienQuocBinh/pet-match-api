@@ -4,21 +4,21 @@ VALUES ('20c01ca8-f7bd-350a-ed43-fa13b1afc51e',
         'https://millenroadanimalhospital.com/wp-content/uploads/2019/03/Dogs.jpg', '2016-04-19 03:47:04.169000',
         '2018-10-20 04:18:28.511000',
         'MPG!kS|mgGQ6Ux[n6MTY#bbL>v2l@7/-Oev-ASFz4N&NZ&,6_XB=2*nOA@vH4~K?kQECUFuF[UgP0J1}Tu2=KPesK]JY4A$/:1Lk',
-        'FEMALE', 526, 'Katherine', '2018-06-09 03:36:13.174000', 37, '264c4530-85ce-4aad-a8a4-369835d2b96a',
+        'FEMALE', 526, 'Katherine', '2018-06-09 03:36:13.174000', 37, null,
         'f152c102-f36f-11ed-a05b-0242ac120003', 'Xlp0qSVs8kZIhG0oXOWIZNfaJL03');
 INSERT INTO public.profile (id, avatar, birthday, created_ts, description, gender, height, name, updated_ts, weight,
                             address_id, breed_id, user_id)
 VALUES ('21b349f2-f578-11ed-a05b-0242ac120003',
         'https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg',
         '2022-06-12 00:00:00.000000', '2023-05-26 03:52:17.052797', 'Short description', 'MALE', 120, 'Vằn',
-        '2023-05-26 03:52:17.052797', 6, 'ccf22bb3-27bb-431e-860a-c518e1b2414c', 'b2a0db24-f577-11ed-a05b-0242ac120003',
+        '2023-05-26 03:52:17.052797', 6, null, 'b2a0db24-f577-11ed-a05b-0242ac120003',
         'Xlp0qSVs8kZIhG0oXOWIZNfaJL03');
 INSERT INTO public.profile (id, avatar, birthday, created_ts, description, gender, height, name, updated_ts, weight,
                             address_id, breed_id, user_id)
 VALUES ('40552693-9373-c034-477e-0de4781d9134', 'https://demostore.properlife.vn/wp-content/uploads/2023/02/dog.jpg',
         '2016-05-12 03:02:34.098000', '2019-05-06 04:54:20.432000',
         'z?10&5M_{!xX^)''B`7vVBI$*u1P%io0c:w$qEOBVJVT6IOv_Eq&YE<X,#GA4PO;+,En(.,rgl~xF/}`Js2N#&`%C$oJ)U$N-{E*K', 'MALE',
-        271, 'Paul', '2017-03-05 19:36:19.074000', 20, 'd15972da-a1c8-4ca6-ab8e-0877784fb421',
+        271, 'Paul', '2017-03-05 19:36:19.074000', 20, null,
         'f152c102-f36f-11ed-a05b-0242ac120003', 'U4Gnn6koanStHJUKhMmYJBh23Tq1');
 INSERT INTO public.profile (id, avatar, birthday, created_ts, description, gender, height, name, updated_ts, weight,
                             address_id, breed_id, user_id)
