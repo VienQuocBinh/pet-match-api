@@ -38,7 +38,7 @@ public class User implements UserDetails {
     @Unique
     @Length(max = 15)
     private String phone;
-    @OneToOne(mappedBy = "user", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user")
     private Subscription subscription;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Profile> profiles;

@@ -17,14 +17,15 @@ import petmatch.service.SubscriptionService;
 import petmatch.service.UserService;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class SubscriptionServiceImpl implements SubscriptionService {
+    private final ModelMapper mapper;
     private final SubscriptionRepository subscriptionRepository;
     private final UserService userService;
-    private final ModelMapper mapper;
     @Value("${subscriptions.duration.premium}")
     private int premiumDuration;
     @Value("${subscriptions.duration.standard}")
@@ -32,10 +33,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public SubscriptionResponse create(SubscriptionRequest request) {
-        var user = userService.getUserById(request.getUserId());
+        // Check whether user already has subscription with the same type -> not creating a new subscription
+        subscriptionRepository.findByUser_IdAndNameAndStatus(request.getUserId(), request.getName(), SubscriptionStatus.ACTIVE.name())
+                .ifPresent(subscription -> {
+                    throw new InternalServerErrorException("User " + subscription.getUser().getId() + " already has subscription");
+                });
 
         var subscription = Subscription.builder();
-
         if (request.getName().equals(SubscriptionName.PREMIUM.name())) {
             subscription.name(SubscriptionName.PREMIUM.name())
                     .startFrom(new Date())
@@ -48,7 +52,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             throw new InternalServerErrorException("Invalid subscription");
         }
         subscription.status(SubscriptionStatus.ACTIVE.name())
-                .user(mapper.map(user, User.class));
+                .user(mapper.map(userService.getUserById(request.getUserId()), User.class));
         var savedSubscription = subscriptionRepository.save(subscription.build());
 
         return mapper.map(savedSubscription, SubscriptionResponse.class);
@@ -59,5 +63,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         var subscription = subscriptionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(SubscriptionService.class, "id", id));
         return mapper.map(subscription, SubscriptionResponse.class);
+    }
+
+    @Override
+    public List<SubscriptionResponse> getDetailsByUserId(String userId) {
+        var subscription = subscriptionRepository.findAllByUser_Id(userId)
+                .orElseThrow(() -> new EntityNotFoundException(Subscription.class, "User id", userId));
+        return subscription.stream()
+                .map(sub -> mapper.map(sub, SubscriptionResponse.class))
+                .toList();
     }
 }

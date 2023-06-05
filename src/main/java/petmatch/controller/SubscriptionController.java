@@ -9,6 +9,7 @@ import petmatch.api.request.SubscriptionRequest;
 import petmatch.api.response.SubscriptionResponse;
 import petmatch.service.SubscriptionService;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,6 +21,11 @@ public class SubscriptionController {
     @GetMapping("/{id}")
     public ResponseEntity<SubscriptionResponse> getDetails(@PathVariable @Valid UUID id) {
         return ResponseEntity.ok(subscriptionService.getDetails(id));
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<SubscriptionResponse>> getDetailsByUserId(@PathVariable @Valid String id) {
+        return ResponseEntity.ok(subscriptionService.getDetailsByUserId(id));
     }
 
     @PostMapping

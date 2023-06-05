@@ -23,7 +23,7 @@ public class Subscription {
     private int duration; // days
     private String status;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 }
