@@ -23,7 +23,7 @@ public class ProfileResponse {
     private Double height;
     private Double weight;
     private Gender gender;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Bangkok")
     private Date birthday;
     private AddressResponse address;
 }
