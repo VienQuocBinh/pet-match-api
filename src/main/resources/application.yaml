@@ -32,3 +32,7 @@ firebase:
   google-credentials: petmatch-6e802-firebase-adminsdk-akcbv-e6b8e0ed3d.json
   bucket-name: petmatch-6e802.appspot.com
   image-url: https://firebasestorage.googleapis.com/v0/b/${firebase.bucket-name}/o/%s?alt=media
+subscriptions:
+  duration:
+    standard: 2147483647
+    premium: 30

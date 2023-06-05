@@ -155,8 +155,6 @@ create table public.subscription
     start_from timestamp(6),
     status     varchar(255),
     user_id    varchar(255)
-        constraint uk_tq3cq3gmsss8jjyb2l5sb1o6k
-            unique
         constraint fk2a2b2ntxsixvvore38skq06s3
             references public."user"
 );

@@ -4,6 +4,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,16 +16,22 @@ import petmatch.api.request.RegisterRequest;
 import petmatch.api.response.AuthenticationResponse;
 import petmatch.api.response.UserResponse;
 import petmatch.configuration.constance.Role;
+import petmatch.configuration.constance.SubscriptionName;
+import petmatch.configuration.constance.SubscriptionStatus;
 import petmatch.configuration.constance.TokenType;
 import petmatch.configuration.exception.InternalServerErrorException;
+import petmatch.model.Subscription;
 import petmatch.model.Token;
 import petmatch.model.User;
+import petmatch.repository.SubscriptionRepository;
 import petmatch.repository.TokenRepository;
 import petmatch.repository.UserRepository;
 import petmatch.service.AuthenticationService;
 import petmatch.service.JwtService;
 import petmatch.service.firebase.TokenVerifier;
 import petmatch.service.firebase.UserManagementService;
+
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +43,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserManagementService userManagementService;
     private final TokenVerifier tokenVerifier;
     private final TokenRepository tokenRepository;
+    private final SubscriptionRepository subscriptionRepository;
+    @Value("${subscriptions.duration.standard}")
+    private int duration;
 
     @Override
     public AuthenticationResponse register(RegisterRequest request) {
@@ -74,7 +84,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                             payload.getEmail())).getPrincipal();
             user = userRepository.findByEmail(userFirebase.getEmail()).orElseThrow();
         } catch (AuthenticationException e) {
-            // create new user
+            // create new user and STANDARD subscription
             user = userRepository.save(User.builder()
                     .id(userFirebase.getId())
                     .email(userFirebase.getEmail())
@@ -83,6 +93,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .fcmToken(request.getFcmToken())
                     .role(Role.USER)
                     .build());
+
+            var subscription = Subscription.builder()
+                    .name(SubscriptionName.STANDARD.name())
+                    .startFrom(new Date())
+                    .duration(duration)
+                    .status(SubscriptionStatus.ACTIVE.name())
+                    .user(user)
+                    .build();
+
+            subscriptionRepository.save(subscription);
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getClass().getName() + ". " + e.getMessage());
         }
