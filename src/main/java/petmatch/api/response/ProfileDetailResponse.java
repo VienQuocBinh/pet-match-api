@@ -3,11 +3,7 @@ package petmatch.api.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Builder;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import petmatch.configuration.constance.Gender;
 import petmatch.model.Breed;
 
@@ -31,7 +27,7 @@ public class ProfileDetailResponse {
     private Double weight;
     private Gender gender;
     private String description;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Bangkok")
     private Date birthday;
     private List<String> gallery;
     private List<Breed> interests;

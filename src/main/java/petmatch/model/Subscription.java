@@ -20,10 +20,10 @@ public class Subscription {
     private UUID id;
     private String name;
     private Date startFrom;
-    private int duration;
+    private int duration; // days
     private String status;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", unique = true)
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 }
