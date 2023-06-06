@@ -12,4 +12,6 @@ public interface SubscriptionService {
     SubscriptionResponse getDetails(UUID id);
 
     List<SubscriptionResponse> getDetailsByUserId(String userId);
+
+    SubscriptionResponse getCurrentActiveSubscription(String userId);
 }

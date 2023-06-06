@@ -28,6 +28,11 @@ public class SubscriptionController {
         return ResponseEntity.ok(subscriptionService.getDetailsByUserId(id));
     }
 
+    @GetMapping("/current/{userId}")
+    public ResponseEntity<SubscriptionResponse> getCurrentActiveByUserId(@PathVariable @Valid String userId) {
+        return ResponseEntity.ok(subscriptionService.getCurrentActiveSubscription(userId));
+    }
+
     @PostMapping
     @Operation(
             summary = "Create a subscription with name: STANDARD/PREMIUM",

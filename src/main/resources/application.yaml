@@ -16,7 +16,12 @@ spring:
   profiles:
     default: local
 server:
-  port: '8080'
+  port: '8443'
+  ssl:
+    key-alias: 'petmatch-keystore'
+    key-store-type: "jks"
+    key-store-password: 'exepetmatch'
+    key-store: classpath:petmatch-api.jks
   servlet:
     context-path: /pet-match
 springdoc:
