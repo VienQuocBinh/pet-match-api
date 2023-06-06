@@ -22,6 +22,6 @@ public class Address {
     private Double latitude;
     @Column(name = "geo_hash")
     private String geoHash;
-    @OneToOne(mappedBy = "address", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "address", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Profile profile;
 }
