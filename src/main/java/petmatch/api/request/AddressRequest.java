@@ -1,5 +1,6 @@
 package petmatch.api.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -17,6 +18,6 @@ public class AddressRequest {
     private Double latitude;
     @NotNull
     private Double longitude;
-    @NotNull
+    @JsonProperty("profile-id")
     private UUID profileId;
 }

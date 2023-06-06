@@ -35,7 +35,7 @@ public class Profile {
     @Enumerated(EnumType.STRING)
     private Gender gender; // enum gender
     private String description;
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Gallery> gallery;
     @NotNull
     @Column(name = "avatar")
@@ -60,9 +60,11 @@ public class Profile {
     private List<Match> matchFrom;
     @OneToMany(mappedBy = "matchTo", fetch = FetchType.LAZY)
     private List<Match> matchTo;
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Interests> interests;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
+    private List<Reaction> reactedList;
 }

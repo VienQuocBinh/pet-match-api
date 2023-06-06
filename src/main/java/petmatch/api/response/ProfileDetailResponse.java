@@ -35,4 +35,5 @@ public class ProfileDetailResponse {
     private Date birthday;
     private List<String> gallery;
     private List<Breed> interests;
+    private AddressResponse address;
 }

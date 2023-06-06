@@ -8,18 +8,13 @@ import petmatch.api.response.ProfileDetailResponse;
 import petmatch.api.response.ProfileResponse;
 import petmatch.configuration.exception.EntityNotFoundException;
 import petmatch.mapper.ProfileMapper;
-import petmatch.model.Breed;
-import petmatch.model.Gallery;
-import petmatch.model.Interests;
-import petmatch.model.Profile;
+import petmatch.model.*;
 import petmatch.repository.*;
 import petmatch.service.ProfileService;
+import petmatch.util.DistanceUtil;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +22,13 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileRepository profileRepository;
     private final BreedRepository breedRepository;
+    private final AddressRepository addressRepository;
     private final InterestRepository interestRepository;
     private final GalleryRepository galleryRepository;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final DistanceUtil distanceUtil;
+    private static final int GEO_HASH_PRECISION = 12;
 
     @Override
     public List<ProfileResponse> getProfilesByUserId(String userId) {
@@ -61,6 +59,8 @@ public class ProfileServiceImpl implements ProfileService {
         profile.setBreed(breed);
         var user = userRepository.findById(request.getUserId()).orElseThrow(() -> new EntityNotFoundException(petmatch.model.User.class, "userId", "not found"));
         profile.setUser(user);
+        var address = profile.getAddress();
+        address.setGeoHash(distanceUtil.toGeoHashBase(address.getLatitude(), address.getLongitude(), GEO_HASH_PRECISION));
         var res = profileRepository.save(profile);
         var response = modelMapper.map(res, ProfileDetailResponse.class);
         if (request.getInterests() != null && !request.getInterests().isEmpty()) {
@@ -78,21 +78,45 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileDetailResponse updateProfileDetail(ProfileRequest request) {
-        var profile = modelMapper.map(request, Profile.class);
-        var breed = breedRepository.findById(profile.getBreed().getId()).orElseThrow(() -> new EntityNotFoundException(Breed.class, "Breed", "not found"));
+        var profile = profileRepository.findById(request.getProfileId()).orElseThrow(() -> new EntityNotFoundException(Profile.class, "Profile", "not found"));
+        var created = profile.getCreatedTimestamp();
+        var updated = profile.getUpdatedTimestamp();
+        profile = modelMapper.map(request, Profile.class);
+        profile.setCreatedTimestamp(created);
+        profile.setUpdatedTimestamp(updated);
+//        var profile = modelMapper.map(request, Profile.class);
+        var breed = breedRepository.findById(request.getBreed().getId()).orElseThrow(() -> new EntityNotFoundException(Breed.class, "Breed", "not found"));
         profile.setBreed(breed);
-        var res = profileRepository.save(profile);
-        var response = modelMapper.map(res, ProfileDetailResponse.class);
+        var address = profile.getAddress();
+        address.setAddress(request.getAddress().getAddress());
+        address.setLatitude(request.getAddress().getLatitude());
+        address.setLongitude(request.getAddress().getLongitude());
+        address.setGeoHash(distanceUtil.toGeoHashBase(address.getLatitude(), address.getLongitude(), GEO_HASH_PRECISION));
         if (request.getInterests() != null && !request.getInterests().isEmpty()) {
-            var interests = request.getInterests().stream().map(interest -> Interests.builder().breed(interest).profile(res).build()).toList();
-            var interestsList = interestRepository.saveAll(interests);
-            response.setInterests(ProfileMapper.buildBreedsFromInterests(interestsList));
+//            var interests = request.getInterests().stream().map(interest -> Interests.builder().breed(interest).profile(res).build()).toList();
+//            var interestsList = interestRepository.saveAll(interests);
+//            response.setInterests(ProfileMapper.buildBreedsFromInterests(interestsList));
+            var previousInterests = interestRepository.findAllByProfile(profile).orElse(Collections.emptyList());
+            interestRepository.deleteAll(previousInterests);
+            Profile finalProfile = profile;
+            var newInterests = request.getInterests().stream().map(interest -> Interests.builder().breed(interest).profile(finalProfile).build()).toList();
+            profile.setInterests(newInterests);
         }
         if (request.getGallery() != null && !request.getGallery().isEmpty()) {
-            var gallery = request.getGallery().stream().map(s -> Gallery.builder().gallery(s).profile(res).createdTimestamp(Date.from(Instant.now())).updatedTimestamp(Date.from(Instant.now())).build()).toList();
-            var galleryList = galleryRepository.saveAll(gallery);
-            response.setGallery(ProfileMapper.buildGalleryResponse(galleryList));
+
+//            var gallery = request.getGallery().stream().map(s -> Gallery.builder().gallery(s).profile(res).createdTimestamp(Date.from(Instant.now())).updatedTimestamp(Date.from(Instant.now())).build()).toList();
+//            var galleryList = galleryRepository.saveAll(gallery);
+//            response.setGallery(ProfileMapper.buildGalleryResponse(galleryList));
+            var previousGallery = galleryRepository.findAllByProfile(profile).orElse(Collections.emptyList());
+            galleryRepository.deleteAll(previousGallery);
+            Profile finalProfile1 = profile;
+            var gallery = request.getGallery().stream().map(s -> Gallery.builder().gallery(s).profile(finalProfile1).createdTimestamp(Date.from(Instant.now())).updatedTimestamp(Date.from(Instant.now())).build()).toList();
+            profile.setGallery(gallery);
         }
+        var res = profileRepository.save(profile);
+        var response = modelMapper.map(res, ProfileDetailResponse.class);
+        response.setGallery(ProfileMapper.buildGalleryResponse(res.getGallery()));
+        response.setInterests(ProfileMapper.buildBreedsFromInterests(res.getInterests()));
         return response;
     }
 

@@ -33,10 +33,10 @@ public class ReactionServiceImpl implements ReactionService {
         if (profile.getUser().getId().equals(createdProfile.getUser().getId())) {
             throw new InternalServerErrorException("Can not create reaction on the same User");
         }
-
+        var createdBy = profileService.getProfileById(request.getCreatedBy());
         var reaction = reactionRepository.save(Reaction.builder()
                 .comment(request.getComment())
-                .createdBy(request.getCreatedBy())
+                .createdBy(createdBy)
                 .profile(profile)
                 .build());
 
@@ -53,8 +53,12 @@ public class ReactionServiceImpl implements ReactionService {
     @Override
     public List<ReactionResponse> getPreviousReactions(UUID profileId) {
         var profile = profileService.getProfileById(profileId);
-        var reactions = reactionRepository.findAllByCreatedBy(profileId)
+        var reactions = reactionRepository.findAllByProfileId(profileId)
                 .orElse(Collections.emptyList());
-        return reactions.stream().map(reaction -> modelMapper.map(reaction, ReactionResponse.class)).toList();
+        return reactions.stream().map(reaction -> {
+            var res = modelMapper.map(reaction, ReactionResponse.class);
+            res.setProfile(modelMapper.map(reaction.getCreatedBy(), ProfileDetailResponse.class));
+            return res;
+        }).toList();
     }
 }

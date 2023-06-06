@@ -22,6 +22,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfileRequest {
+    @JsonProperty("id")
+    private UUID profileId;
     @NotNull
     @JsonProperty("user-id")
     private String userId;
@@ -31,6 +33,7 @@ public class ProfileRequest {
     private String avatar;
     @NotNull
     private String name;
+    private String description;
     @Positive
     @NotNull
     private Double height;
@@ -44,4 +47,7 @@ public class ProfileRequest {
     private Gender gender;
     private List<Breed> interests;
     private List<String> gallery;
+    @NotNull
+    private AddressRequest address;
+
 }
