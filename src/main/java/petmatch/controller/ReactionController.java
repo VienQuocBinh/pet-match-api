@@ -27,4 +27,9 @@ public class ReactionController {
     public ResponseEntity<List<ReactionResponse>> getReactionLike(@PathVariable UUID profileId) {
         return ResponseEntity.ok(reactionService.getPreviousReactions(profileId));
     }
+
+    @PostMapping("/remove")
+    public ResponseEntity<ReactionResponse> sendPass(@RequestBody ReactionRequest request) {
+        return ResponseEntity.ok(reactionService.removeReaction(request));
+    }
 }

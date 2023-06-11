@@ -19,4 +19,6 @@ public interface ReactionService {
     ReactionResponse createReaction(ReactionRequest request);
 
     List<ReactionResponse> getPreviousReactions(UUID profileId);
+
+    ReactionResponse removeReaction(ReactionRequest request);
 }

@@ -27,7 +27,7 @@ public class Reaction {
     @Nullable
     private String comment;
     @ManyToOne
-    @JoinColumn(name = "profile_id", insertable = false, updatable = false)
+    @JoinColumn(name = "profile_id")
     private Profile profile;
     @NotNull
     @Column(name = "created_ts")
@@ -39,6 +39,6 @@ public class Reaction {
     private Date updatedTimestamp;
 
     @ManyToOne
-    @JoinColumn(name = "createdBy", insertable = false, updatable = false)
+    @JoinColumn(name = "created_by")
     private Profile createdBy;
 }
