@@ -58,7 +58,7 @@ flyway {
 
 flywayMigrate.dependsOn classes
 
-bootRun.dependsOn flywayClean, flywayMigrate
+//bootRun.dependsOn flywayClean, flywayMigrate
 
 build.dependsOn jacocoTestReport
 
