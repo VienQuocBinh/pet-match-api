@@ -3,6 +3,7 @@ package petmatch.service.implementation;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import petmatch.api.request.SubscriptionRequest;
 import petmatch.api.response.SubscriptionResponse;
@@ -13,18 +14,19 @@ import petmatch.configuration.exception.InternalServerErrorException;
 import petmatch.model.Subscription;
 import petmatch.model.User;
 import petmatch.repository.SubscriptionRepository;
+import petmatch.repository.UserRepository;
 import petmatch.service.SubscriptionService;
 import petmatch.service.UserService;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.time.Instant;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class SubscriptionServiceImpl implements SubscriptionService {
     private final ModelMapper mapper;
     private final SubscriptionRepository subscriptionRepository;
+    private final UserRepository userRepository;
     private final UserService userService;
     @Value("${subscriptions.duration.premium}")
     private int premiumDuration;
@@ -72,5 +74,48 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return subscription.stream()
                 .map(sub -> mapper.map(sub, SubscriptionResponse.class))
                 .toList();
+    }
+
+    @Override
+    public SubscriptionResponse getCurrentActiveSubscription(String userId) {
+        var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class, "User", userId));
+        var currentSubScription = subscriptionRepository.getLatestSubscriptionByUserId(user.getId(), PageRequest.of(0,1)).orElse(null);
+        if(currentSubScription == null) {
+            var newSubscription = Subscription.builder()
+                    .name(SubscriptionName.STANDARD.name())
+                    .duration(standardDuration)
+                    .startFrom(Date.from(Instant.now()))
+                    .user(user)
+                    .status("ACTIVE").build();
+            subscriptionRepository.save(newSubscription);
+            return mapper.map(newSubscription, SubscriptionResponse.class);
+        }
+        if(!isValidSubscription(currentSubScription)) {
+            currentSubScription.setName(SubscriptionName.STANDARD.name());
+            currentSubScription.setStartFrom(Date.from(Instant.now()));
+            currentSubScription.setDuration(standardDuration);
+            currentSubScription.setStatus(SubscriptionStatus.ACTIVE.name());
+            var data = subscriptionRepository.save(currentSubScription);
+        }
+        return mapper.map(currentSubScription, SubscriptionResponse.class);
+    }
+
+    boolean isValidSubscription(Subscription subscription) {
+        if(Objects.equals(subscription.getName(), SubscriptionName.PREMIUM.name())) {
+            var endDate = Date.from(subscription.getStartFrom().toInstant());
+            Calendar c = Calendar.getInstance();
+            c.setTime(subscription.getStartFrom());
+            c.add(Calendar.DATE, subscription.getDuration());
+            endDate = c.getTime();
+            var today = Date.from(Instant.now());
+            //if subscription in range
+            return today.after(subscription.getStartFrom()) && today.before(endDate);
+        }
+        return true;
+    }
+
+    void disableSubscription(Subscription subscription) {
+        subscription.setStatus(SubscriptionStatus.EXPIRED.name());
+        subscriptionRepository.save(subscription);
     }
 }

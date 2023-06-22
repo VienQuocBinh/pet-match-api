@@ -60,7 +60,7 @@ create table public.profile
 (
     id          uuid         not null
         primary key,
-    avatar      varchar(255) not null,
+    avatar      varchar(512) not null,
     birthday    timestamp(6),
     created_ts  timestamp(6) not null,
     description varchar(255),
@@ -88,7 +88,7 @@ create table public.gallery
     id         uuid not null
         primary key,
     created_ts timestamp(6),
-    gallery    varchar(255),
+    gallery    varchar(512),
     updated_ts timestamp(6),
     profile_id uuid
         constraint fk367qm3y3d18tdlgo1gwnx7jeo

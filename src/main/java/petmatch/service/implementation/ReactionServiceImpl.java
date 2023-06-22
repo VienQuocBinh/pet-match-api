@@ -1,11 +1,13 @@
 package petmatch.service.implementation;
 
+import com.fasterxml.jackson.core.PrettyPrinter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import petmatch.api.request.ReactionRequest;
 import petmatch.api.response.ProfileDetailResponse;
 import petmatch.api.response.ReactionResponse;
+import petmatch.configuration.exception.EntityNotFoundException;
 import petmatch.configuration.exception.InternalServerErrorException;
 import petmatch.model.Reaction;
 import petmatch.repository.ReactionRepository;
@@ -60,5 +62,18 @@ public class ReactionServiceImpl implements ReactionService {
             res.setProfile(modelMapper.map(reaction.getCreatedBy(), ProfileDetailResponse.class));
             return res;
         }).toList();
+    }
+
+    @Override
+    public ReactionResponse removeReaction(ReactionRequest request) {
+        var reaction = reactionRepository
+                .findByProfileIdAndCreatedBy(request.getProfileId(), request.getCreatedBy())
+                .orElseThrow(() -> new EntityNotFoundException(Reaction.class, "Reaction", "Not found"));
+        reactionRepository.delete(reaction);
+        return ReactionResponse.builder()
+                .profile(modelMapper.map(reaction.getCreatedBy(), ProfileDetailResponse.class))
+                .createdTimestamp(reaction.getCreatedTimestamp())
+                .updatedTimestamp(reaction.getUpdatedTimestamp())
+                .build();
     }
 }

@@ -18,4 +18,7 @@ public interface ReactionRepository extends JpaRepository<Reaction, UUID> {
 
     @Query("SELECT r FROM Reaction r WHERE r.profile.id = :profileId")
     Optional<List<Reaction>> findAllByProfileId(@Param("profileId") UUID profileId);
+
+    @Query("SELECT r FROM Reaction r WHERE r.profile.id = :profileId and r.createdBy.id = :createdBy")
+    Optional<Reaction> findByProfileIdAndCreatedBy(@Param("profileId") UUID profileId, @Param("createdBy") UUID createdBy);
 }
